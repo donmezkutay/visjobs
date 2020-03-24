@@ -23,7 +23,7 @@ def wind_pressure_rh(time_on, pressure, hum, u, v, lon_iso, lat_iso, extent=[], 
                      , breaking=True, tl1=[0,1.02], tl2=[0,1.0050], 
                      tl3=[0.5,1.0050], tl4=[0.81000,1.0050], tl5=[0.0047, 0.98422]):
     
-    #define starting time
+    #define starting time using datetime
     start_time_all = datetime.now()
 
     #define our loop ingredients

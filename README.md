@@ -66,5 +66,6 @@ Visjobs offers plotting effective variables in effective way using atmospheric m
 			breaking=True, 		world_map=False,
 			title_on=True,owner_name='Visjobs')
 ```
-
+plot result:
+https://pasteboard.co/J0LwrYC.png
 ![]('https://pasteboard.co/J0LwrYC.png')

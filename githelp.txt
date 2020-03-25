@@ -21,5 +21,3 @@
 #Merge changes done over donmezberkay-patch-1 branch to Master branch
 4- git push origin master
 #Finally push it
-
-

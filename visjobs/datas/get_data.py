@@ -7,7 +7,7 @@ import numpy as np
 from netCDF4 import num2date
 import numpy as np
 
-#learn if the latest wanted or the desired date from user?
+#learn if the latest wanted or the desired date from user??
 def pick_data(year=None, month=None, day=None, hour=None, latest=False, model='GFS', hourly=False, resolution=0.25):
     
     

@@ -11,6 +11,7 @@ Visjobs offers plotting effective variables in effective way using atmospheric m
 
 
 - importing dependencies
+```python
 
 		from visjobs.datas import get_data
 		from visjobs.visualize import draw_map
@@ -24,6 +25,7 @@ Visjobs offers plotting effective variables in effective way using atmospheric m
 - here latest=True means the latest output with 06Z run
 - model is chosen GFS can be changed to NAM also
 - if hourly=False the GFS model will be 3 hourly -->only valid for GFS not for NAM
+```python
 
 		data = get_data.pick_data( hour='06',latest=True,model='GFS',
 		hourly=False)
@@ -33,6 +35,7 @@ Visjobs offers plotting effective variables in effective way using atmospheric m
 
 
 - In below using xarray DataArray,  we are dedicating the interval of desired latitude and longitude
+```python
 
 		temp = data['tmpprs'][0 : 2 : 1, : , :].sel(lat =
 				slice(35,45),lon=slice(230,240), lev=slice(1000,500)) - 273.15
@@ -41,6 +44,7 @@ Visjobs offers plotting effective variables in effective way using atmospheric m
 		time = len(data['time'][0 : 2 : 1])
 
 - choosing the desired plot size
+```python
 
 		from pylab import rcParams
 		rcParams['figure.figsize'] = 30,26

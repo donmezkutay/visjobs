@@ -1,8 +1,8 @@
-## visjobs
+# visjobs
 
 Visjobs offers plotting effective variables in effective way using atmospheric models.
 
-### Installation
+## Installation
 
 - git clone https://github.com/donmezk/visjobs
 - Usable in same directory since no Class.

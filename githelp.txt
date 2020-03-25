@@ -1,0 +1,25 @@
+##### REMINDER FOR GIT COMMANDS #####
+
+##### TO UP TO DATE YOUR FORK #####
+#git remote add upstream https://github.com/donmezk/visjobs.git
+1- git remote set-url upstream https://github.com/donmezk/visjobs.git
+2- git remote set-url origin https://github.com/donmezberkay/visjobs.git
+#For example Now I started Fork Up to Date Process for visjobs
+#I need to put owner's clone link following 'upstream' above
+#But I need to put my own Fork clone link following 'origin' above
+#step 1 and 2 not obligatory each time when you up to date your fork
+# whenever you set upstream and origin it will stay as it is
+2- git fetch upstream
+3- git merge upstream/master master
+
+
+##### TO MERGE YOUR BRANCH TO THE MASTER BRANCH #####
+1- git checkout master
+#Go to your master branch
+2- git pull
+3- git merge donmezberkay-patch-1
+#Merge changes done over donmezberkay-patch-1 branch to Master branch
+4- git push origin master
+#Finally push it
+
+

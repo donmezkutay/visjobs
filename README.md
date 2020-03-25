@@ -30,6 +30,7 @@ Visjobs offers plotting effective variables in effective way using atmospheric m
 
 		data = get_data.pick_data( hour='06',latest=True,model='GFS',
 		hourly=False)
+```
 - Note that data taken is xarray DataArray
 
 ------------
@@ -43,13 +44,13 @@ Visjobs offers plotting effective variables in effective way using atmospheric m
 		rh = data['rhprs'][0: 2 : 1, : , :].sel(lat = slice(35,45),lon=slice(230, 24
 				0),lev=slice(1000,500))
 		time = len(data['time'][0 : 2 : 1])
-
+```
 - choosing the desired plot size
 ```python
 
 		from pylab import rcParams
 		rcParams['figure.figsize'] = 30,26
-
+```
 - here we are plotting the temp_rh cross section map
 - lon_ave is questioned if the user expects to have mean of longitude or Latitude
 - if lon_ave=True, the longitude average is taken and cross section map is created.
@@ -64,3 +65,4 @@ Visjobs offers plotting effective variables in effective way using atmospheric m
 			save_where=r'Pictures\temp_rh_cross_aegean{}.png', 
 			breaking=True, 		world_map=False,
 			title_on=True,owner_name='Visjobs')
+```

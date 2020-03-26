@@ -100,26 +100,26 @@ def pick_area(data, total_process, interval ,list_of_vars, list_of_areas, pr_hei
                 -->['europe','northamerica','australia','gulfofmexico','carribeans','indianocean']
     """
     
-    #places avaliable for return its data
-    p_d = {'europe' : [0, 48, 30, 60],
-              'northamerica' : [218,318,0,60],
-              'australia' : [80,180,-50,10],
-              'gulfofmexico' : [260,285,18,31],
-              'carribeans' : [275,300,12,38], 
-              'indianocean' : [30, 130,-25,25]}
+    
     
     #trying if the longitude values from 0 to 360 or -180 to 180?
-    try:
-        t = data['tmp2m'][:total_process:interval, :, :].sel(lon=slice(p_d[1][0],p_d[1][1]),  
-                                                                      lat=slice(p_d[1][2],p_d[1][3]), 
-                                                                  )
-    # -180 to 180 change the values given in the dictionary to relevant
-    except:
+    
+    if data['tmp2m']['lon'].values[0] < 0:
         p_d = {'europe' : [0, 48, 30, 60],
               'northamerica' : [-142,-42,0,60],
               'australia' : [80,180,-50,10],
               'gulfofmexico' : [-100,-75,18,31],
               'carribeans' : [-85,-60,12,38], 
+              'indianocean' : [30, 130,-25,25]}
+                                                                  
+    # -180 to 180 change the values given in the dictionary to relevant
+    else:
+        #places avaliable for return its data
+        p_d = {'europe' : [0, 48, 30, 60],
+              'northamerica' : [218,318,-10,70],
+              'australia' : [80,180,-50,10],
+              'gulfofmexico' : [260,285,14,37],
+              'carribeans' : [275,300,12,38], 
               'indianocean' : [30, 130,-25,25]}
         
     

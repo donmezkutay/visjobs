@@ -449,7 +449,7 @@ def height_pressure(time_on, pressure, height,pr_height ,place='europe',
     
     #extents corresponding to the places defined
     extents = np.array([[0, 48, 30, 60],[218,318,-5,55],
-                        [80,180,-36,5],[260,285,23,26],[275,300,17,33],[30, 130,-20,20]])
+                        [80,180,-36,5],[260,285,17,33],[275,300,17,33],[30, 130,-20,20]])
         
     #define starting time
     start_time_all = datetime.now()
@@ -498,7 +498,7 @@ def height_pressure(time_on, pressure, height,pr_height ,place='europe',
         if pr_height == '700':
             tm_height =  np.arange(2640,3310,30)
         if pr_height == '500':
-            tm_height =  np.arange(4740,6060,30)
+            tm_height =  np.arange(4680,6121,60)
         
         #gridline
         ax.gridlines()

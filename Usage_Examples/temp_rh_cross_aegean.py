@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[2]:
-
-
 #importing dependencies
 from visjobs.datas import get_data
 from visjobs.visualize import draw_map
@@ -16,14 +13,18 @@ import xarray as xr
 #if hourly=False the GFS model will be 3 hourly -->only valid for GFS not for NAM
 data = get_data.pick_data( hour='06',latest=True,model='GFS', hourly=False)
 
-#here using xarray dataset,  we are dedicating the interval of desired latitude and longitude
-# [0:2:1,:,:] means --> ['time', 'lon','lat']
-temp = data['tmpprs'][0:2:1,:,:].sel(lat = slice(35,45),lon=slice(230,240), lev=slice(1000,500)) - 273.15
-rh = data['rhprs'][0:2:1,:,:].sel(lat = slice(35,45),lon=slice(230, 240), lev=slice(1000,500))
-time = len(data['time'][0:2:1])
+
+# here we are getting the desired variables with desired areas of interest,returned in dictionary
+time, area_dict = get_data.pick_area(data, total_process=2, interval=1, list_of_vars=['tmppres','rhprs'],
+                                     pr_height=[1000,500],
+                          list_of_areas=['australia','europe'])
 
 
-# In[3]:
+temp = np.subtract(area_dict['australia'][0], 273.15)
+rh = area_dict['australia'][1]
+
+
+
 
 
 #choosing the desired plot size
@@ -42,28 +43,3 @@ rcParams['figure.figsize'] = 30,26
 draw_map.temp_rh_cross_aegean(time, temp, rh, lon_ave=True, 
                           save_where=r'Pictures\temp_rh_cross_aegean{}.png', breaking=True, world_map=False, title_on=True
                              ,owner_name='Visjobs')
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-

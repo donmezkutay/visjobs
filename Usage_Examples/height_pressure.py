@@ -1,10 +1,15 @@
-#!/usr/bin/env python
-# coding: utf-8
+# -*- coding: utf-8 -*-
+"""
 
+
+@author: Kutay
+
+"""
 #importing dependencies
 from visjobs.datas import get_data
 from visjobs.visualize import draw_map
 import xarray as xr
+import numpy as np
 
 #getting the data using pick_data function of visjobs.datas
 #hour=06 means the 06Z run of the model 
@@ -13,21 +18,16 @@ import xarray as xr
 #if hourly=False the GFS model will be 3 hourly -->only valid for GFS not for NAM
 data = get_data.pick_data( hour='06',latest=True,model='GFS', hourly=False)
 
-
-
 # here we are getting the desired variables with desired areas of interest,returned in dictionary
-time, area_dict = get_data.pick_area(data, total_process=2, interval=1,
-                                     list_of_vars=['prmslmsl','ugrd10m','vgrd10m','rhprs'],pr_height=700,
+time, area_dict = get_data.pick_area(data, total_process=2, interval=1, list_of_vars=['prmslmsl','hgtprs'],pr_height=500,
                           list_of_areas=['australia','europe'])
 
-#let's say I want to plot wind, pressure and 700hPa RH for Australia
+#let's say I want to plot 500mb heights and mslp for Australia
 #so in the upper part I got the relevant data using pick_area function
 #so let's wrap the data:
-press = np.divide(area_dict['australia'][0], 100) #setting the unit
-ugrd = np.multiply(area_dict['australia'][1], 1.94384449)
-vgrd = np.multiply(area_dict['australia'][2], 1.94384449)
-rh = area_dict['australia'][3]
 
+press = np.divide(area_dict['australia'][0], 100)
+heightprs = area_dict['australia'][1]
 
 #choosing the desired plot size
 import numpy as np
@@ -43,12 +43,9 @@ rcParams['figure.figsize'] = 21,24
 #tl1,tl2,tl3 etc. parameters.
 # here tl5 is used to change the position of owner_name
 #owner_name plots the upper-left sign.
-draw_map.wind_pressure_rh(time, press, rh, ugrd, vgrd, place='europe',
-                          save_where='Pictures\wind_pressure_rh{}.png', breaking=True, title_on=True ,owner_name='Kutay DÖNMEZ',
-                         tl5=[0.0047, 0.98100])
-
-
-
-
-
+draw_map.height_pressure(time, press, heightprs ,pr_height='500', place='australia',
+                          save_where=r'C:\Users\Kutay\###PROPER CODE LIBRARY###\Pictures\height_prs{}.png', breaking=True, 
+                          title_on=True ,owner_name='Kutay DÖNMEZ',plot_main_title=
+                         r'GFS 500mb Geopotential Height(m) | Presssure(mb)',
+                         tl5=[0.0047, 0.97100], tl1=[0,1.032])
 

@@ -85,3 +85,84 @@ def pick_data(year=None, month=None, day=None, hour=None, latest=False, model='G
         
 
     return data
+
+#now with this function we will be able to specifize the area we are interested and also the variables.
+def pick_area(data, total_process, interval ,list_of_vars, list_of_areas, pr_height=None, ):
+    """ Returns time_with_interval and the dictionary of the areas with variables
+        data = NAM or GFS xarray DataArray should be given
+        total_process = (int) means the until which time step data is expected (1 or 2 or 100 etc.)
+        interval = (int) means until the expected time step in which interval it should go.
+        list_of_vars = the list of variables can be also a single element list:
+                                the variable names can be found at:
+                                https://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20200326/gfs_0p25_06z_anl.info
+                                
+        list_of_areas = the list of areas can be also a single element: available options:
+                -->['europe','northamerica','australia','gulfofmexico','carribeans','indianocean']
+    """
+    
+    #places avaliable for return its data
+    p_d = {'europe' : [0, 48, 30, 60],
+              'northamerica' : [218,318,0,60],
+              'australia' : [80,180,-50,10],
+              'gulfofmexico' : [260,285,18,31],
+              'carribeans' : [275,300,12,38], 
+              'indianocean' : [30, 130,-25,25]}
+    
+    #trying if the longitude values from 0 to 360 or -180 to 180?
+    try:
+        t = data['tmp2m'][:total_process:interval, :, :].sel(lon=slice(p_d[1][0],p_d[1][1]),  
+                                                                      lat=slice(p_d[1][2],p_d[1][3]), 
+                                                                  )
+    # -180 to 180 change the values given in the dictionary to relevant
+    except:
+        p_d = {'europe' : [0, 48, 30, 60],
+              'northamerica' : [-142,-42,0,60],
+              'australia' : [80,180,-50,10],
+              'gulfofmexico' : [-100,-75,18,31],
+              'carribeans' : [-85,-60,12,38], 
+              'indianocean' : [30, 130,-25,25]}
+        
+    
+    #constructing important list and dict for the loop
+    
+    places_dict = {}
+    #looping in the list of areas
+    say_pl = 1
+    for pl in list_of_areas:
+        variables_l = []
+        #looping in the list of variables
+        say_var =1
+        for var in list_of_vars:
+            #check if data contains 'lev' coords.
+            try:
+                if len(pr_height) == 1:
+                    #wrap the data
+                    single = data[var][:total_process:interval, :, :].sel(lon=slice(p_d[pl][0],p_d[pl][1]),  
+                                                                          lat=slice(p_d[pl][2],p_d[pl][3]), 
+                                                                          lev=pr_height[0])
+                elif len(pr_height) == 2:
+                    single = data[var][:total_process:interval, :, :].sel(lon=slice(p_d[pl][0],p_d[pl][1]),  
+                                                                      lat=slice(p_d[pl][2],p_d[pl][3]), 
+                                                                      lev=slice(pr_height[0],pr_height[1]))
+                #append a single variable given by the user
+               
+            
+            #if no 'lev' coords exist.
+            except:
+                single = data[var][:total_process:interval, :, :].sel(lon=slice(p_d[pl][0],p_d[pl][1]),  
+                                                                      lat=slice(p_d[pl][2],p_d[pl][3]),)
+            
+                #append a single variable given by the user
+            variables_l.append(single)
+        
+            
+            
+        
+        #append all the variables with respect to their area of interest.
+        places_dict[pl] = variables_l
+    
+    #time data with interval
+    time_w_interval = data['time'][:total_process:interval]
+    
+    #return
+    return len(time_w_interval), places_dict

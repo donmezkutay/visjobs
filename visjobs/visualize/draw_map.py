@@ -22,7 +22,7 @@ def wind_pressure_rh(time_on, pressure, hum, u, v, place='europe',
                      hourly=3, 
                       save_where='wind_pressure_rh{}.png',title_on=False
                       ,owner_name='Kutay&Berkay DONMEZ',
-     plot_main_title='GFS MSLP(hPa)|10m Wind(knots)|700hPa RH(%80 to %100 Green Contours)'
+     plot_main_title=''
                      , breaking=True, tl1=[0,1.02], tl2=[0,1.0050], 
                      tl3=[0.5,1.0050], tl4=[0.81000,1.0050], tl5=[0.0047, 0.98422]):
     """ Returns a pre-prepared windspeed-pressure-rh plot
@@ -67,8 +67,8 @@ def wind_pressure_rh(time_on, pressure, hum, u, v, place='europe',
     places= np.array(['europe','northamerica','australia','gulfofmexico','carribeans','indianocean'])
     
     #extents corresponding to the places defined
-    extents = np.array([[0, 48, 30, 60],[218,318,0,60],
-                        [80,180,-50,10],[260,285,18,31],[275,300,12,38],[30, 130,-25,25]])
+    extents = np.array([[0, 48, 30, 60],[218,318,-5,55],
+                        [80,180,-40,0],[260,285,23,26],[275,300,17,33],[30, 130,-20,20]])
         
     #define starting time
     start_time_all = datetime.now()
@@ -402,4 +402,167 @@ def temp_rh_cross_aegean(time_on, temp, hum,
 
     end_time_all = datetime.now()
     print('TEMP_PRESS_TURKEY | TOTAL JOB DONE | Duration: {}'.format(end_time_all - start_time_all))
+    
+    
+def height_pressure(time_on, pressure, height,pr_height ,place='europe',
+                     hourly=3, 
+                      save_where='wind_pressure_rh{}.png',title_on=False
+                      ,owner_name='Kutay&Berkay DONMEZ',
+     plot_main_title=''
+                     , breaking=True, tl1=[0,1.02], tl2=[0,1.0050], 
+                     tl3=[0.5,1.0050], tl4=[0.81000,1.0050], tl5=[0.0047, 0.98422]):
+    """ Returns a pre-prepared height-MSL pressure- plot
+        
+    time_on=indicates the count of maps(hours) will be plotted
+    extent:
+    
+    pr_height(string)=indicates which pressure surface height will be drawn (850,500,700mb are valid)
+        
+    #places avaliable for plotting
+    places= np.array(['europe','northamerica','australia','gulfofmexico','carribeans'])
+    
+    If title_on=False the titles will not be seen, unless the title_on=True,
+    Default is False.
+    
+    NOTE:Please Input Xarray DataArray
+    """
+    
+    #warn user to only input xarray dataset as variables
+    try:
+        press = pressure.sel(time=pressure['time'][0] ) 
+    except:
+        raise('Please Input a proper Xarray DataArray')
+        
+    try:
+        geo = height.sel(time=height['time'][0] ) 
+    except:
+        raise('Please Input a proper Xarray DataArray')
+    
+    
+    
+    #defining lon and lat
+    lon_iso = pressure.lon[:].values
+    lat_iso = pressure.lat[:].values
+    
+    #places avaliable for plotting
+    places= np.array(['europe','northamerica','australia','gulfofmexico','carribeans','indianocean'])
+    
+    #extents corresponding to the places defined
+    extents = np.array([[0, 48, 30, 60],[218,318,-5,55],
+                        [80,180,-36,5],[260,285,23,26],[275,300,17,33],[30, 130,-20,20]])
+        
+    #define starting time
+    start_time_all = datetime.now()
+
+    #define our loop ingredients
+    toplam=0
+    say=0
+    for t in range(time_on):
+        #define variables
+        press = pressure.sel(time=pressure['time'][t] ) 
+        geo = height.sel(time=height['time'][t] ) 
+        
+
+
+        #define valid time using the time dim of the var
+        valid = pressure['time'][t].values # buradaki time'da hata vericek sonra
+        valid = str(valid)[0:13]
+    
+        #define our axis
+        my_dpi = 96
+        fig = plt.figure()
+        ax = fig.add_subplot(1,1,1, projection=cartopy.crs.Mercator())
+        
+        #define our features
+        ax.add_feature(cartopy.feature.BORDERS.with_scale('10m') , linewidths = 0.4, zorder=13)
+        ax.add_feature(cartopy.feature.COASTLINE.with_scale('10m') , linewidths=0.6, zorder=14)
+        ax.add_feature(cartopy.feature.LAND.with_scale('10m') ,facecolor='lightgrey')
+        
+        #defining extent area
+        for i in range(len(places)):
+            if place == places[i]:
+                ax.set_extent(extents[i])
+        
+        #define a colormap
+        c1 = plt.cm.winter(np.linspace(0., 1, 256))
+        c2 = plt.cm.autumn_r(np.linspace(0., 1, 256))
+        cols = np.vstack((c1,c2))
+        mymap = mpl.colors.LinearSegmentedColormap.from_list('my_colormap', cols)
+
+        #define our arranges of variables will be ploted
+        tm_pressure = np.arange(920,1051,2)
+        
+        #check which pressure surface is specified
+        if pr_height == '850':
+            tm_height =  np.arange(1080,1740,30)
+        if pr_height == '700':
+            tm_height =  np.arange(2640,3310,30)
+        if pr_height == '500':
+            tm_height =  np.arange(4740,6060,30)
+        
+        #gridline
+        ax.gridlines()
+       
+        #contourplot for MSLP
+        mesh_press=ax.contour(lon_iso, lat_iso, press, tm_pressure, transform = cartopy.crs.PlateCarree(), colors='k' ,
+                   linestyles='solid', linewidths=0.9)
+
+        ax.clabel(mesh_press, fontsize=18, inline=1, inline_spacing=7,fmt='%i', rightside_up=True, use_clabeltext=True , )
+        
+        #contourplot for height
+        mesh_height=ax.contour(lon_iso, lat_iso, geo, tm_height, colors='white', transform = cartopy.crs.PlateCarree() ,
+                   linestyles='solid' , linewidths=1.2)
+
+        ax.clabel(mesh_height, fontsize=20, inline=1, inline_spacing=7,fmt='%i', rightside_up=True, use_clabeltext=True , )
+        
+        #meshplot for wind speed
+        mesh_geo=ax.contourf(lon_iso, lat_iso, geo ,tm_height, cmap=mymap, extend='both', alpha=0.6,
+                                transform = cartopy.crs.PlateCarree())
+        
+
+        
+        #make title
+        if title_on==True:
+            title1 = ax.text(tl1[0],tl1[1],plot_main_title,transform=ax.transAxes,fontsize=23, weight='bold',style='italic')
+            title2 = ax.text(tl2[0],tl2[1],'Init: {}'.format(str(pressure['time'][0].values)[0:13]),transform=ax.transAxes,fontsize=17,style='italic')
+            title3 = ax.text(tl3[0],tl3[1],'Hour: {}'.format(toplam),transform=ax.transAxes,fontsize=18,style='italic')
+            title4 = ax.text(tl4[0],tl4[1],'Valid: {}'.format(valid),transform=ax.transAxes,fontsize=18,weight='heavy',style='italic')
+            title5 = ax.text(tl5[0],tl5[1], owner_name,transform=ax.transAxes, size=18,zorder=17,style='italic',
+    
+                 bbox=dict(boxstyle="square",alpha=0.7,
+                           ec='black',
+                           fc='white',
+                           ))
+        
+        #check if the data is hourly or 3 hourly or 12 hourly
+        if hourly == 1:
+            toplam += 1
+        elif hourly == 3:
+            toplam += 3
+        elif hourly == 12:
+            toplam += 12
+
+        
+        #define our colorbar
+        #cb = plt.colorbar(mesh2,fraction=0.1 , pad=0.001, orientation='horizontal' )
+
+        #cb.ax.tick_params(labelsize=17)
+        
+        #save the fig
+        plt.savefig(save_where.format(t) , bbox_inches='tight')
+        
+        #inform user map count going
+        say+=1
+        print('height_pressure | {}.map | Done--{}'.format(say,datetime.now().time()))
+
+
+
+        if breaking == True:
+            break
+
+
+
+
+    end_time_all = datetime.now()
+    print('height_pressure | TOTAL JOB DONE | Duration: {}'.format(end_time_all - start_time_all))
 

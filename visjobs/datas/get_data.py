@@ -110,7 +110,7 @@ def pick_area(data, total_process, interval ,list_of_vars, list_of_areas, pr_hei
               'australia' : [80,180,-50,10],
               'gulfofmexico' : [-100,-75,18,31],
               'carribeans' : [-85,-60,12,38], 
-              'indianocean' : [30, 130,-25,25]}
+              'indianocean' : [30, 130,-35,35]}
                                                                   
     # -180 to 180 change the values given in the dictionary to relevant
     else:
@@ -120,7 +120,7 @@ def pick_area(data, total_process, interval ,list_of_vars, list_of_areas, pr_hei
               'australia' : [80,180,-50,10],
               'gulfofmexico' : [260,285,14,37],
               'carribeans' : [275,300,12,38], 
-              'indianocean' : [30, 130,-25,25]}
+              'indianocean' : [30, 130,-35,35]}
         
     
     #constructing important list and dict for the loop

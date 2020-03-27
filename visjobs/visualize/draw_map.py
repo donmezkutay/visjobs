@@ -566,3 +566,153 @@ def height_pressure(time_on, pressure, height,pr_height ,place='europe',
     end_time_all = datetime.now()
     print('height_pressure | TOTAL JOB DONE | Duration: {}'.format(end_time_all - start_time_all))
 
+
+def wind_gust(time_on, gust ,place='europe',
+                    hourly=3, save_where='gust{}.png',
+                    title_on=False,
+                    owner_name='Kutay&Berkay DONMEZ',
+                    plot_main_title='',
+                    breaking=True, tl1=[0,1.02], tl2=[0,1.0050], 
+                    tl3=[0.5,1.0050], tl4=[0.81000,1.0050], 
+                    tl5=[0.0047, 0.98422]):
+    
+    """ Returns a pre-prepared wind_gust plot
+        
+    time_on(int)=indicates the count of maps(hours) will be plotted
+    
+    #places avaliable for plotting
+    places= np.array(['europe','northamerica','australia','gulfofmexico','carribeans'])
+    
+    If title_on=False the titles will not be seen, unless the title_on=True,
+    Default is False.
+    
+    NOTE:Please Input Xarray DataArray
+    """
+    
+    #warn user to only input xarray dataset as variables
+    try:
+        wgust = gust.sel(time=gust['time'][0] ) 
+    except:
+        raise('Please Input a proper Xarray DataArray')
+        
+    
+    
+    #defining lon and lat
+    lon_iso = gust.lon[:].values
+    lat_iso = gust.lat[:].values
+    
+    #places avaliable for plotting
+    places= np.array(['europe','northamerica','australia','gulfofmexico','carribeans','indianocean'])
+    
+    #extents corresponding to the places defined
+    extents = np.array([[0, 48, 30, 60],[218,318,-5,55],
+                        [80,180,-36,5],[260,285,17,33],[275,300,17,33],[30, 130,-20,20]])
+        
+    #define starting time
+    start_time_all = datetime.now()
+
+    #define our loop ingredients
+    toplam=0
+    say=0
+    for t in range(time_on):
+        #define variables
+        wgust = gust.sel(time=gust['time'][t] ) 
+        
+        wgust = xr.where(wgust>0,wgust,0)
+
+
+
+        #define valid time using the time dim of the var
+        valid = gust['time'][t].values 
+        valid = str(valid)[0:13]
+    
+        #define our axis
+        my_dpi = 96
+        fig = plt.figure()
+        ax = fig.add_subplot(1,1,1, projection=cartopy.crs.Mercator())
+        
+        #define our features
+        ax.add_feature(cartopy.feature.BORDERS.with_scale('10m') , linewidths = 0.4, zorder=13)
+        ax.add_feature(cartopy.feature.COASTLINE.with_scale('10m') , linewidths=0.6, zorder=14)
+        ax.add_feature(cartopy.feature.LAND.with_scale('10m') ,facecolor='lightgrey')
+        
+        #defining extent area
+        for i in range(len(places)):
+            if place == places[i]:
+                ax.set_extent(extents[i])
+        
+        #define a colormap
+        cmap='gnuplot2'
+
+        #define our arranges of variables will be ploted
+        tm_gust = np.arange(0 , 46 , 1)
+        
+        
+        #gridline
+        ax.gridlines()
+       
+        
+        #meshplot for wind gust
+        mesh_gust=ax.contourf(lon_iso, lat_iso, wgust ,tm_gust, cmap=cmap, extend='both',
+                                  norm=mpl.colors.Normalize(vmin=0, vmax=45),
+                                transform = cartopy.crs.PlateCarree())
+        
+
+        
+        #make title
+        if title_on==True:
+            title1 = ax.text(tl1[0],tl1[1],plot_main_title,transform=ax.transAxes,fontsize=23, weight='bold',style='italic')
+            title2 = ax.text(tl2[0],tl2[1],'Init: {}'.format(str(gust['time'][0].values)[0:13]),transform=ax.transAxes,fontsize=17,style='italic')
+            title3 = ax.text(tl3[0],tl3[1],'Hour: {}'.format(toplam),transform=ax.transAxes,fontsize=18,style='italic')
+            title4 = ax.text(tl4[0],tl4[1],'Valid: {}'.format(valid),transform=ax.transAxes,fontsize=18,weight='heavy',style='italic')
+            title5 = ax.text(tl5[0],tl5[1], owner_name,transform=ax.transAxes, size=18,zorder=17,style='italic',
+    
+                 bbox=dict(boxstyle="square",alpha=0.7,
+                           ec='black',
+                           fc='white',
+                           ))
+        
+        #check if the data is hourly or 3 hourly or 12 hourly
+        if hourly == 1:
+            toplam += 1
+        elif hourly == 3:
+            toplam += 3
+        elif hourly == 12:
+            toplam += 12
+        
+        #indicating text intervals with respect to given area
+        ara = 8
+        if place == 'northamerica' or place == 'australia' or 'indianocean':
+            ara = 14
+        
+        
+        for i in wgust['lat'][0:-17:ara]:
+            for j in wgust['lon'][0:-1:ara]:
+                if int(np.round(wgust.sel(lat=i, lon=j).values)) == 0:
+                    pass
+                else:
+                    text = ax.text(j, i, int(np.round(wgust.sel(lat=i, lon=j).values)),
+                               ha="center", va="center", color="w",transform = cartopy.crs.PlateCarree(), size=20)
+                
+        #define our colorbar
+        #cb = plt.colorbar(mesh2,fraction=0.1 , pad=0.001, orientation='horizontal' )
+
+        #cb.ax.tick_params(labelsize=17)
+        
+        #save the fig
+        plt.savefig(save_where.format(t) , bbox_inches='tight')
+        
+        #inform user map count going
+        say+=1
+        print('wind_gust | {}.map | Done--{}'.format(say,datetime.now().time()))
+
+
+
+        if breaking == True:
+            break
+
+
+
+
+    end_time_all = datetime.now()
+    print('wind_gust | TOTAL JOB DONE | Duration: {}'.format(end_time_all - start_time_all))

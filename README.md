@@ -5,7 +5,7 @@ Visjobs offers plotting effective variables in effective way using atmospheric m
 ## Installation
 
 - git clone https://github.com/donmezk/visjobs
-- Usable in same directory since no Class.
+- Usable in same directory since not a package.
 
 ### Some example about how to use it
 

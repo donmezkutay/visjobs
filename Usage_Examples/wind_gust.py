@@ -21,7 +21,7 @@ data = get_data.pick_data( hour='06',latest=True,model='GFS', hourly=False)
 time, area_dict = get_data.pick_area(data, total_process=2, interval=1, list_of_vars=['gustsfc',],
                           list_of_areas=['carribeans','indianocean'])
 
-#let's say I want to plot 500mb heights and mslp for Australia
+#let's say I want to plot sfc wind gust for indianocean
 #so in the upper part I got the relevant data using pick_area function
 #so let's wrap the data:
 
@@ -32,7 +32,7 @@ import numpy as np
 from pylab import rcParams
 rcParams['figure.figsize'] = 21,24
 
-#place='europe' indicates the basin that user want to show as a plot.
+#place='indianocean' indicates the basin that user want to show as a plot.
 #places avaliable for plotting
 #places= np.array(['europe','northamerica','australia','gulfofmexico','carribeans','indianocean'])
 #if breaking=True only a single map will be created even if a bunch of time is introduced 

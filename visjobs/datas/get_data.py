@@ -87,7 +87,7 @@ def pick_data(year=None, month=None, day=None, hour=None, latest=False, model='G
     return data
 
 #now with this function we will be able to specifize the area we are interested and also the variables.
-def pick_area(data, total_process, interval ,list_of_vars, list_of_areas, pr_height=None, ):
+def pick_area(data ,total_process, interval ,list_of_vars, list_of_areas, init_time=0, pr_height=None, ):
     """ Returns time_with_interval and the dictionary of the areas with variables
         data = NAM or GFS xarray DataArray should be given
         total_process = (int) means the until which time step data is expected (1 or 2 or 100 etc.)
@@ -137,11 +137,11 @@ def pick_area(data, total_process, interval ,list_of_vars, list_of_areas, pr_hei
             try:
                 if len(pr_height) == 1:
                     #wrap the data
-                    single = data[var][:total_process:interval, :, :].sel(lon=slice(p_d[pl][0],p_d[pl][1]),  
+                    single = data[var][init_time:total_process:interval, :, :].sel(lon=slice(p_d[pl][0],p_d[pl][1]),  
                                                                           lat=slice(p_d[pl][2],p_d[pl][3]), 
                                                                           lev=pr_height[0])
                 elif len(pr_height) == 2:
-                    single = data[var][:total_process:interval, :, :].sel(lon=slice(p_d[pl][0],p_d[pl][1]),  
+                    single = data[var][init_time:total_process:interval, :, :].sel(lon=slice(p_d[pl][0],p_d[pl][1]),  
                                                                       lat=slice(p_d[pl][2],p_d[pl][3]), 
                                                                       lev=slice(pr_height[0],pr_height[1]))
                 #append a single variable given by the user
@@ -149,7 +149,7 @@ def pick_area(data, total_process, interval ,list_of_vars, list_of_areas, pr_hei
             
             #if no 'lev' coords exist.
             except:
-                single = data[var][:total_process:interval, :, :].sel(lon=slice(p_d[pl][0],p_d[pl][1]),  
+                single = data[var][init_time:total_process:interval, :, :].sel(lon=slice(p_d[pl][0],p_d[pl][1]),  
                                                                       lat=slice(p_d[pl][2],p_d[pl][3]),)
             
                 #append a single variable given by the user
@@ -162,7 +162,7 @@ def pick_area(data, total_process, interval ,list_of_vars, list_of_areas, pr_hei
         places_dict[pl] = variables_l
     
     #time data with interval
-    time_w_interval = data['time'][:total_process:interval]
+    time_w_interval = data['time'][init_time:total_process:interval]
     
     #return
     return len(time_w_interval), places_dict

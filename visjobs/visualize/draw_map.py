@@ -142,8 +142,8 @@ def wind_pressure_rh(time_on, pressure, hum, u, v, place='europe',
         
         if title_on==True:
             title1 = ax.text(tl1[0],tl1[1],plot_main_title,transform=ax.transAxes,fontsize=23, weight='bold',style='italic')
-            title2 = ax.text(tl2[0],tl2[1],'Init: {}'.format(str(pressure['time'][0].values)[0:13]),transform=ax.transAxes,fontsize=17,style='italic')
-            title3 = ax.text(tl3[0],tl3[1],'Hour: {}'.format(toplam),transform=ax.transAxes,fontsize=18,style='italic')
+            title2 = ax.text(tl2[0],tl2[1],'Init: {}'.format(str(pressure['time'].attrs['grads_min'])),transform=ax.transAxes,fontsize=17,style='italic')
+            #title3 = ax.text(tl3[0],tl3[1],'Hour: {}'.format(toplam),transform=ax.transAxes,fontsize=18,style='italic')
             title4 = ax.text(tl4[0],tl4[1],'Valid: {}'.format(valid),transform=ax.transAxes,fontsize=18,weight='heavy',style='italic')
             title5 = ax.text(tl5[0],tl5[1], owner_name,transform=ax.transAxes, size=18,zorder=17,style='italic',
     
@@ -318,8 +318,8 @@ def temp_rh_cross_aegean(time_on, temp, hum,
         #arrange the titles of map
         if title_on == True:
             title = ax.text(tl1[0],tl1[1], titleis+' '+plot_main_title, color='navy',transform=ax.transAxes,fontsize=17, weight='bold',style='italic')
-            title2 = ax.text(tl2[0],tl2[1],'Init: {}'.format(str(temp['time'][0].values)[0:13]),transform=ax.transAxes,fontsize=14,style='italic')
-            title3 = ax.text(tl3[0],tl3[1],'Hour: {}'.format(toplam),transform=ax.transAxes,fontsize=15,style='italic')
+            title2 = ax.text(tl2[0],tl2[1],'Init: {}'.format(str(pressure['time'].attrs['grads_min'])),transform=ax.transAxes,fontsize=17,style='italic')
+            #title3 = ax.text(tl3[0],tl3[1],'Hour: {}'.format(toplam),transform=ax.transAxes,fontsize=15,style='italic')
             title4 = ax.text(tl4[0],tl4[1],'Valid: {}'.format(valid),transform=ax.transAxes,fontsize=15,weight='heavy',style='italic')
             title5 = ax.text(tl5[0],tl5[1], owner_name, transform=ax.transAxes, size=15,zorder=17,style='italic',
     
@@ -524,8 +524,8 @@ def height_pressure(time_on, pressure, height,pr_height ,place='europe',
         #make title
         if title_on==True:
             title1 = ax.text(tl1[0],tl1[1],plot_main_title,transform=ax.transAxes,fontsize=23, weight='bold',style='italic')
-            title2 = ax.text(tl2[0],tl2[1],'Init: {}'.format(str(pressure['time'][0].values)[0:13]),transform=ax.transAxes,fontsize=17,style='italic')
-            title3 = ax.text(tl3[0],tl3[1],'Hour: {}'.format(toplam),transform=ax.transAxes,fontsize=18,style='italic')
+            title2 = ax.text(tl2[0],tl2[1],'Init: {}'.format(str(pressure['time'].attrs['grads_min'])),transform=ax.transAxes,fontsize=17,style='italic')
+            #title3 = ax.text(tl3[0],tl3[1],'Hour: {}'.format(toplam),transform=ax.transAxes,fontsize=18,style='italic')
             title4 = ax.text(tl4[0],tl4[1],'Valid: {}'.format(valid),transform=ax.transAxes,fontsize=18,weight='heavy',style='italic')
             title5 = ax.text(tl5[0],tl5[1], owner_name,transform=ax.transAxes, size=18,zorder=17,style='italic',
     
@@ -662,8 +662,8 @@ def wind_gust(time_on, gust ,place='europe',
         #make title
         if title_on==True:
             title1 = ax.text(tl1[0],tl1[1],plot_main_title,transform=ax.transAxes,fontsize=23, weight='bold',style='italic')
-            title2 = ax.text(tl2[0],tl2[1],'Init: {}'.format(str(gust['time'][0].values)[0:13]),transform=ax.transAxes,fontsize=17,style='italic')
-            title3 = ax.text(tl3[0],tl3[1],'Hour: {}'.format(toplam),transform=ax.transAxes,fontsize=18,style='italic')
+            title2 = ax.text(tl2[0],tl2[1],'Init: {}'.format(str(pressure['time'].attrs['grads_min'])),transform=ax.transAxes,fontsize=17,style='italic')
+            #title3 = ax.text(tl3[0],tl3[1],'Hour: {}'.format(toplam),transform=ax.transAxes,fontsize=18,style='italic')
             title4 = ax.text(tl4[0],tl4[1],'Valid: {}'.format(valid),transform=ax.transAxes,fontsize=18,weight='heavy',style='italic')
             title5 = ax.text(tl5[0],tl5[1], owner_name,transform=ax.transAxes, size=18,zorder=17,style='italic',
     

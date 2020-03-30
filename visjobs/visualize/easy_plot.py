@@ -57,8 +57,7 @@ class painter():
         borders = ax.add_feature(cartopy.feature.BORDERS.with_scale(res) , linewidths = linewidths, **kwargs)
         return borders
     
-        self.ax = ax
-        return self.ax
+        
     
     #lets define the coastline feature using cartopy
     def paint_coastline(self, ax=None, linewidths = 0.6, res='50m', **kwargs):
@@ -179,7 +178,7 @@ class painter():
         return gl
     
     #let's define a contourplot
-    def plot_contour(self, lon, lat, data, *args, transform='None', ax=None, **kwargs ):
+    def plot_contour(self, lon, lat, data, *args,linestyles='solid', linewidths=0.9, transform='None', ax=None, **kwargs ):
         """returns contourplot of matplotlibs
            transform must be given string"""
         #available projections
@@ -291,7 +290,7 @@ class painter():
         cb = plt.colorbar(mappable, orientation=orientation, cax=ax_cb, **kwargs)
         
     #let's define the clabel of the contourplot
-    def plot_clabel(self, mesh, *args, ax=None, **kwargs ):
+    def plot_clabel(self, mesh, fontsize=18, *args, ax=None, **kwargs ):
         """returns clabel of contourplot of matplotlibs
            """
         #available projections
@@ -304,11 +303,11 @@ class painter():
             ax = self.paint_ax(check_proj=True, proj='Mercator')
         
         #get clabel
-        mesh2 = ax.clabel(mesh, fontsize=18, inline=1, inline_spacing=7,fmt='%i', rightside_up=True, use_clabeltext=True , )
+        mesh2 = ax.clabel(mesh, fontsize=fontsize, inline=1, inline_spacing=7,fmt='%i', rightside_up=True, use_clabeltext=True , )
         return mesh2
     
     #let's define title
-    def set_title(self, title, up=0, right=1.02,fontsize=12, ax=None, **kwargs):
+    def set_title(self, title, up=1.02, right=0,  *args, fontsize=12,  ax=None, **kwargs):
         """
         returns title
         title must be given string
@@ -319,5 +318,5 @@ class painter():
             ax = self.paint_ax(check_proj=True, proj='Mercator')
         
             
-        title = ax.text(up, right, title, transform=ax.transAxes, fontsize=fontsize, weight='bold', style='italic')
-        return title
+        titles = ax.text(right, up, title,  fontsize=fontsize,  **kwargs)
+        return titles

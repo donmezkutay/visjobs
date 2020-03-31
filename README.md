@@ -57,7 +57,7 @@ time, area_dict = get_data.pick_area(data, total_process=2, interval=1, init_tim
                           	     list_of_areas=['northamerica','europe'])
 ```
 
-+ Let's say I want to plot 500mb heights and mslp for Australia.
++ Let's say I want to plot 500mb heights and mslp for North America.
 + In the upper part I got the relevant data using pick_area function.
 + Now assign each single data from the whole dictionary.
 ```

@@ -5,26 +5,29 @@ Visjobs offers plotting effective variables in effective way using atmospheric m
 ## Installation
 
 - git clone https://github.com/donmezk/visjobs
-- Usable in same directory since not a package.
+- Clone in the same directory code is written
 
-### Some example about how to use it
+### Some example about how to use Visjobs
 
 
 - importing dependencies
 ```python
 
-		from visjobs.datas import get_data
-		from visjobs.visualize import draw_map
-		import xarray as xr
+from visjobs.datas import get_data
+from visjobs.visualize import draw_map
+import xarray as xr
+import numpy as np
 
 ```
 ------------
 
 
-- getting the data using pick_data function of visjobs.datas
-- hour=06 means the 06Z run of the model 
-- here latest=True means the latest output with 06Z run
-- model is chosen GFS can be changed to NAM also
+- Getting the data using pick_data function
+- Function pick_data():
+- 	hour=06      --> means the 06Z run of the model 
+- 	latest=True  --> means the latest output with 06Z run
+-	model='GFS'  --> means GFS data is choosen ['NAM' is also available]
+- 	hourly=False --> means GFS 3 hourly data is asked [not valid for NAM]
 - if hourly=False the GFS model will be 3 hourly -->only valid for GFS not for NAM
 ```python
 

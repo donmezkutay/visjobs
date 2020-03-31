@@ -9,7 +9,7 @@ Visjobs offers plotting effective variables in effective way using atmospheric m
 
 ### Some example about how to use Visjobs
 
-
+- WE WILL BE PLOTTING THE 500MB GEOPOTENTIAL HEIGHT | MEAN SEA LEVEL PRESSURE FOR NORTH AMERICA
 - importing dependencies.
 ```python
 
@@ -54,15 +54,15 @@ data = get_data.pick_data(hour='06',latest=True,model='GFS',
 
 time, area_dict = get_data.pick_area(data, total_process=2, interval=1, init_time=0, 
 				     list_of_vars=['prmslmsl','hgtprs'],pr_height=['500'],
-                          	     list_of_areas=['australia','europe'])
+                          	     list_of_areas=['northamerica','europe'])
 ```
 
 + Let's say I want to plot 500mb heights and mslp for Australia.
 + In the upper part I got the relevant data using pick_area function.
 + Now assign each single data from the whole dictionary.
 ```
-press = np.divide(area_dict['australia'][0], 100)
-heightprs = area_dict['australia'][1]
+press = np.divide(area_dict['northamerica'][0], 100)
+heightprs = area_dict['northamerica'][1]
 ```
 
 - Choosing the desired plot size.
@@ -83,19 +83,19 @@ heightprs = area_dict['australia'][1]
     * save_where --> where to save the figure
     * breaking   --> if True, the function will stop after one loop
     * title_on   --> if True, the title must be introduced, default is False
-    * ----------------------------------------------------------------------
+    ----------------------------------------------------------------------
         * if only the title_on = True, apply inputs below
     * owner_name = the box in the upper left corner of the plot
     * plot_main_tite 	       --> main title that is going to be plotted in string
     * tl1, tl2, tl3, tll4, tl5 --> set the title's placement [a,b] (int list)
 
 ```python
-draw_map.height_pressure(time, press, heightprs ,pr_height='500', place='australia',
-                         save_where=r'C:\Users\Kutay\###PROPER CODE LIBRARY###\Pictures\height_prs{}.png',
+draw_map.height_pressure(time, press, heightprs ,pr_height='500', place='northamerica',
+                         save_where=r'height_prs{}.png',
 			 breaking=True, title_on=True ,owner_name='Kutay DÖNMEZ',
 			 plot_main_title=r'GFS 500mb Geopotential Height(m) | Presssure(mb)',
                          tl5=[0.0047, 0.97100], tl1=[0,1.032])
 ```
 plot result:
-https://pasteboard.co/J0LwrYC.png
-![]('https://pasteboard.co/J0LwrYC.png')
+https://pasteboard.co/J1HhgsF.png
+![]('https://pasteboard.co/J1HhgsF.png')

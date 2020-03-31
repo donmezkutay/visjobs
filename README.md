@@ -68,9 +68,8 @@ heightprs = area_dict['northamerica'][1]
 - Choosing the desired plot size.
 
 ```python
-
-		from pylab import rcParams
-		rcParams['figure.figsize'] = 21, 24
+from pylab import rcParams
+rcParams['figure.figsize'] = 21, 24
 ```
 
 + In below using height_pressure function we will plot 500mb Height-Pressure graphic
@@ -83,7 +82,7 @@ heightprs = area_dict['northamerica'][1]
     * save_where --> where to save the figure
     * breaking   --> if True, the function will stop after one loop
     * title_on   --> if True, the title must be introduced, default is False
-    ----------------------------------------------------------------------
+    * ----------------------------------------------------------------------
         * if only the title_on = True, apply inputs below
     * owner_name = the box in the upper left corner of the plot
     * plot_main_tite 	       --> main title that is going to be plotted in string

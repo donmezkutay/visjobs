@@ -22,19 +22,19 @@ import numpy as np
 ------------
 
 
-- Getting the data using pick_data function
-- Function pick_data():
-- 	hour=06      --> means the 06Z run of the model 
-- 	latest=True  --> means the latest output with 06Z run
--	model='GFS'  --> means GFS data is choosen ['NAM' is also available]
-- 	hourly=False --> means GFS 3 hourly data is asked [not valid for NAM]
-- if hourly=False the GFS model will be 3 hourly -->only valid for GFS not for NAM
++ Getting the data using pick_data function
++ Function pick_data():
+ 	*hour=06      --> means the 06Z run of the model 
+ 	*latest=True  --> means the latest output with 06Z run
+	*model='GFS'  --> means GFS data is choosen ['NAM' is also available]
+ 	*hourly=False --> means GFS 3 hourly data is asked [not valid for NAM]
+
 ```python
 
-		data = get_data.pick_data( hour='06',latest=True,model='GFS',
-		hourly=False)
+data = get_data.pick_data(hour='06',latest=True,model='GFS',
+			  hourly=False)
 ```
-- Note that data taken is xarray DataArray
++ Note that data taken is xarray DataArray
 
 ------------
 

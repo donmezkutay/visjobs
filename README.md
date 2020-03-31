@@ -75,18 +75,19 @@ heightprs = area_dict['australia'][1]
 
 + In below using height_pressure function we will plot 500mb Height-Pressure graphic
 + Function height_pressure():
-    * time --> the loop initiated from the init_time indicated above function until the 'time'
-    * press --> xarray input for pressure
-    * heightprs --> xarray input for height
-    * pr_height --> the desired pressure height
-    * place     --> the area which the user wants to plot
+    * time       --> the loop initiated from the init_time indicated above function until the 'time'
+    * press      --> xarray input for pressure
+    * heightprs  --> xarray input for height
+    * pr_height  --> the desired pressure height
+    * place      --> the area which the user wants to plot
     * save_where --> where to save the figure
     * breaking   --> if True, the function will stop after one loop
     * title_on   --> if True, the title must be introduced, default is False
-        * if the title_on = True:
-	* owner_name = the box in the upper left corner of the plot
-	* plot_main_tite --> main title that is going to be plotted in string
-	* tl1, tl2, tl3, tll4, tl5 --> 
+    * ----------------------------------------------------------------------
+        * if only the title_on = True, apply inputs below
+    * owner_name = the box in the upper left corner of the plot
+    * plot_main_tite 	       --> main title that is going to be plotted in string
+    * tl1, tl2, tl3, tll4, tl5 --> set the title's placement [a,b] (int list)
 
 ```python
 draw_map.height_pressure(time, press, heightprs ,pr_height='500', place='australia',

@@ -64,11 +64,12 @@ def wind_pressure_rh(time_on, pressure, hum, u, v, place='europe',
     lat_iso = pressure.lat[:].values
     
     #places avaliable for plotting
-    places= np.array(['europe','northamerica','australia','gulfofmexico','carribeans','indianocean'])
+    places= np.array(['europe','northamerica','australia','gulfofmexico','carribeans','indianocean','northatlantic'])
     
     #extents corresponding to the places defined
     extents = np.array([[0, 48, 30, 60],[218,318,-5,55],
-                        [80,180,-40,0],[260,285,23,26],[275,300,17,33],[30, 130,-20,20]])
+                        [80,180,-40,0],[260,285,23,26],[275,300,17,33],[30, 130,-20,20],
+                        [300, 359,43,64]])
         
     #define starting time
     start_time_all = datetime.now()
@@ -445,11 +446,12 @@ def height_pressure(time_on, pressure, height,pr_height ,place='europe',
     lat_iso = pressure.lat[:].values
     
     #places avaliable for plotting
-    places= np.array(['europe','northamerica','australia','gulfofmexico','carribeans','indianocean'])
+    places= np.array(['europe','northamerica','australia','gulfofmexico','carribeans','indianocean','northatlantic'])
     
     #extents corresponding to the places defined
     extents = np.array([[0, 48, 30, 60],[218,318,-5,55],
-                        [80,180,-36,5],[260,285,17,33],[275,300,17,33],[30, 130,-20,20]])
+                        [80,180,-36,5],[260,285,17,33],[275,300,17,33],[30, 130,-20,20],
+                        [300, 359,43,64]])
         
     #define starting time
     start_time_all = datetime.now()
@@ -602,11 +604,12 @@ def wind_gust(time_on, gust ,place='europe',
     lat_iso = gust.lat[:].values
     
     #places avaliable for plotting
-    places= np.array(['europe','northamerica','australia','gulfofmexico','carribeans','indianocean'])
+    places= np.array(['europe','northamerica','australia','gulfofmexico','carribeans','indianocean','northatlantic'])
     
     #extents corresponding to the places defined
     extents = np.array([[0, 48, 30, 60],[218,318,-5,55],
-                        [80,180,-36,5],[260,285,17,33],[275,300,17,33],[30, 130,-20,20]])
+                        [80,180,-36,5],[260,285,17,33],[275,300,17,33],[30, 130,-20,20],
+                        [300, 359,43,64]])
         
     #define starting time
     start_time_all = datetime.now()
@@ -682,7 +685,7 @@ def wind_gust(time_on, gust ,place='europe',
         
         #indicating text intervals with respect to given area
         ara = 8
-        if place == 'northamerica' or place == 'australia' or 'indianocean':
+        if place == 'northamerica' or place == 'australia' or 'indianocean' or 'northatlantic':
             ara = 14
         
         

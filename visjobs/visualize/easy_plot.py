@@ -164,19 +164,20 @@ class painter():
         return ax.gridlines()
     
     #let's set lon and lat visible on the map
-    def set_lonlat(self, ax=None, sizing=15):
+    def set_lonlat(self, ax=None, sizing=15, *args, **kwargs):
         """makes the longitude and latitude visible on the dges of the map"""
         #check if axis exists
         if ax == None:
             ax = self.paint_ax(check_proj=True, proj='Mercator')
     
-        gl = ax.gridlines(crs=cartopy.crs.PlateCarree(), draw_labels=True , linestyle='--')
+        gl = ax.gridlines(crs=cartopy.crs.PlateCarree(), draw_labels=True , *args, **kwargs)
         gl.xformatter = LONGITUDE_FORMATTER
         gl.yformatter = LATITUDE_FORMATTER
         gl.xlabels_top = False
         gl.ylabels_right = False
         gl.xlabel_style = {'size': sizing,}
         gl.ylabel_style = {'size': sizing}
+
         return gl
     
     #let's define a contourplot
@@ -235,7 +236,7 @@ class painter():
         return mesh
     
     #let's define colorbar ### COLORBAR FUNCTION IS DERIVED FROM TOMER BURG GITHUB.COM/TOMERBURG ###
-    def plot_colorbar(self,mappable=None,location='right',size="3%",pad='1%',fig=None,ax=None,**kwargs):
+    def plot_colorbar(self,mappable=None,location='right',size="3%",pad='1%', sizing=15,fig=None,ax=None,**kwargs):
         """
         Uses the axes_grid toolkit to add a colorbar to the parent axis and rescale its size to match
         that of the parent axis, similarly to Basemap's functionality.
@@ -290,6 +291,7 @@ class painter():
         #Create colorbar
         fig.add_axes(ax_cb)
         cb = plt.colorbar(mappable, orientation=orientation, cax=ax_cb, **kwargs)
+        cb.ax.tick_params(labelsize=sizing)
         
     #let's define the clabel of the contourplot
     def plot_clabel(self, mesh, fontsize=18, *args, ax=None, **kwargs ):

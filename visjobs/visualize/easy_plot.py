@@ -178,7 +178,7 @@ class painter():
         return gl
     
     #let's define a contourplot
-    def plot_contour(self, lon, lat, data, *args,linestyles='solid', linewidths=0.9, transform='None', ax=None, **kwargs ):
+    def plot_contour(self, lon, lat, data, *args, transform='None', ax=None, **kwargs ):
         """returns contourplot of matplotlibs
            transform must be given string"""
         #available projections

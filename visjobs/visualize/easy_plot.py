@@ -164,7 +164,7 @@ class painter():
         return ax.gridlines()
     
     #let's set lon and lat visible on the map
-    def set_lonlat(self, ax=None):
+    def set_lonlat(self, ax=None, sizing=15):
         """makes the longitude and latitude visible on the dges of the map"""
         #check if axis exists
         if ax == None:
@@ -175,6 +175,8 @@ class painter():
         gl.yformatter = LATITUDE_FORMATTER
         gl.xlabels_top = False
         gl.ylabels_right = False
+        gl.xlabel_style = {'size': sizing,}
+        gl.ylabel_style = {'size': sizing}
         return gl
     
     #let's define a contourplot

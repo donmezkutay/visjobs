@@ -30,14 +30,18 @@ class painter():
     def __init__(self):
         self=self
     
-    def paint_ax(self, i=1, j=1, k=1, check_proj = False, proj='Mercator' ):
+    def paint_ax(self, i=1, j=1, k=1, check_proj = False, proj='Mercator',
+                 central_longitude=25, central_latitude=45, standard_parallels=(30, 60)):
         """returning user a figure and axis with given parameters
            If projection will be used spot check_proj=True:
                                                    and define a projection
         """
         #availale cartopy projections
         proj_dict ={'Mercator':cartopy.crs.Mercator(),
-                    'PlateCarree':cartopy.crs.PlateCarree()}
+                    'PlateCarree':cartopy.crs.PlateCarree(),
+                    'LambertConformal':cartopy.crs.LambertConformal(central_longitude=central_latitude,
+                                                                    central_latitude=central_longitude,
+                                                                    standard_parallels=standard_parallels)}
         fig = plt.figure()
         #check if proj is expected
         if check_proj == True:

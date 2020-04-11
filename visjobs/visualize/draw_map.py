@@ -319,7 +319,7 @@ def temp_rh_cross_aegean(time_on, temp, hum,
         #arrange the titles of map
         if title_on == True:
             title = ax.text(tl1[0],tl1[1], titleis+' '+plot_main_title, color='navy',transform=ax.transAxes,fontsize=17, weight='bold',style='italic')
-            title2 = ax.text(tl2[0],tl2[1],'Init: {}'.format(str(pressure['time'].attrs['grads_min'])),transform=ax.transAxes,fontsize=17,style='italic')
+            title2 = ax.text(tl2[0],tl2[1],'Init: {}'.format(str(temp['time'].attrs['grads_min'])),transform=ax.transAxes,fontsize=17,style='italic')
             #title3 = ax.text(tl3[0],tl3[1],'Hour: {}'.format(toplam),transform=ax.transAxes,fontsize=15,style='italic')
             title4 = ax.text(tl4[0],tl4[1],'Valid: {}'.format(valid),transform=ax.transAxes,fontsize=15,weight='heavy',style='italic')
             title5 = ax.text(tl5[0],tl5[1], owner_name, transform=ax.transAxes, size=15,zorder=17,style='italic',
@@ -486,9 +486,13 @@ def height_pressure(time_on, pressure, height,pr_height ,place='europe',
                 ax.set_extent(extents[i])
         
         #define a colormap
-        c1 = plt.cm.winter(np.linspace(0., 1, 256))
-        c2 = plt.cm.autumn_r(np.linspace(0., 1, 256))
-        cols = np.vstack((c1,c2))
+        c2 = plt.cm.winter(np.linspace(0., 1, 256))
+        c3 = plt.cm.autumn_r(np.linspace(0., 1, 256))
+        c1 = plt.cm.Greys_r(np.linspace(0., 1, 256))
+        c4 = plt.cm.RdPu_r(np.linspace(0., 1, 256))
+
+
+        cols = np.vstack((c1,c2,c3,c4))
         mymap = mpl.colors.LinearSegmentedColormap.from_list('my_colormap', cols)
 
         #define our arranges of variables will be ploted
@@ -500,7 +504,7 @@ def height_pressure(time_on, pressure, height,pr_height ,place='europe',
         if pr_height == '700':
             tm_height =  np.arange(2640,3310,30)
         if pr_height == '500':
-            tm_height =  np.arange(4680,6121,60)
+            tm_height =  np.arange(4680,6121,30)
         
         #gridline
         ax.gridlines()
@@ -665,7 +669,7 @@ def wind_gust(time_on, gust ,place='europe',
         #make title
         if title_on==True:
             title1 = ax.text(tl1[0],tl1[1],plot_main_title,transform=ax.transAxes,fontsize=23, weight='bold',style='italic')
-            title2 = ax.text(tl2[0],tl2[1],'Init: {}'.format(str(pressure['time'].attrs['grads_min'])),transform=ax.transAxes,fontsize=17,style='italic')
+            title2 = ax.text(tl2[0],tl2[1],'Init: {}'.format(str(gust['time'].attrs['grads_min'])),transform=ax.transAxes,fontsize=17,style='italic')
             #title3 = ax.text(tl3[0],tl3[1],'Hour: {}'.format(toplam),transform=ax.transAxes,fontsize=18,style='italic')
             title4 = ax.text(tl4[0],tl4[1],'Valid: {}'.format(valid),transform=ax.transAxes,fontsize=18,weight='heavy',style='italic')
             title5 = ax.text(tl5[0],tl5[1], owner_name,transform=ax.transAxes, size=18,zorder=17,style='italic',

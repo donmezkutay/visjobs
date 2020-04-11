@@ -15,17 +15,17 @@ import numpy as np
 #here latest=True means the latest output with 06Z run
 #model is chosen GFS can be changed to NAM also
 #if hourly=False the GFS model will be 3 hourly -->only valid for GFS not for NAM
-data = get_data.pick_data( hour='06',latest=True,model='GFS', hourly=False)
+data = get_data.pick_data( hour='00',latest=True,model='GFS', hourly=False)
 
 # here we are getting the desired variables with desired areas of interest,returned in dictionary
-time, area_dict = get_data.pick_area(data, total_process=2, interval=1, list_of_vars=['gustsfc',],
-                          list_of_areas=['carribeans','indianocean'])
+time, area_dict = get_data.pick_area(data, total_process=-1, interval=4, list_of_vars=['gustsfc',],
+                          list_of_areas=['europe'])
 
 #let's say I want to plot sfc wind gust for indianocean
 #so in the upper part I got the relevant data using pick_area function
 #so let's wrap the data:
 
-gust = area_dict['indianocean'][0]
+gust = area_dict['europe'][0]
 
 #choosing the desired plot size
 import numpy as np
@@ -41,8 +41,8 @@ rcParams['figure.figsize'] = 21,24
 #tl1,tl2,tl3 etc. parameters.
 # here tl5 is used to change the position of owner_name
 #owner_name plots the upper-left sign.
-draw_map.wind_gust(time, gust, place='indianocean',
-                          save_where=r'wind_gust{}.png', breaking=True, 
+draw_map.wind_gust(time, gust, place='europe',
+                          save_where=r'C:\Users\Kutay\visjobs\picturing\wind_gust{}.png', breaking=False, 
                           title_on=True ,owner_name='Kutay DÖNMEZ',plot_main_title=
                          r'GFS Surface Wind Gust(m/s)',
                          tl5=[0.0047, 0.98100], tl1=[0,1.022])

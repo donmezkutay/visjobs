@@ -16,18 +16,21 @@ import numpy as np
 #here latest=True means the latest output with 06Z run
 #model is chosen GFS can be changed to NAM also
 #if hourly=False the GFS model will be 3 hourly -->only valid for GFS not for NAM
-data = get_data.pick_data( hour='06',latest=True,model='GFS', hourly=False)
+data = get_data.pick_data( hour='00',latest=True,model='GFS', hourly=False)
 
 # here we are getting the desired variables with desired areas of interest,returned in dictionary
-time, area_dict = get_data.pick_area(data, total_process=2, interval=1, list_of_vars=['prmslmsl','hgtprs'],pr_height=500,
-                          list_of_areas=['australia','europe'])
+time, area_dict = get_data.pick_area(data, total_process=-1, interval=4, list_of_vars=['prmslmsl','hgtprs'],pr_height=['500'],
+                          list_of_areas=['europe'])
 
 #let's say I want to plot 500mb heights and mslp for Australia
 #so in the upper part I got the relevant data using pick_area function
 #so let's wrap the data:
 
-press = np.divide(area_dict['australia'][0], 100)
-heightprs = area_dict['australia'][1]
+press = np.divide(area_dict['europe'][0], 100)
+heightprs = area_dict['europe'][1]
+
+
+
 
 #choosing the desired plot size
 import numpy as np
@@ -43,9 +46,9 @@ rcParams['figure.figsize'] = 21,24
 #tl1,tl2,tl3 etc. parameters.
 # here tl5 is used to change the position of owner_name
 #owner_name plots the upper-left sign.
-draw_map.height_pressure(time, press, heightprs ,pr_height='500', place='australia',
-                          save_where=r'C:\Users\Kutay\###PROPER CODE LIBRARY###\Pictures\height_prs{}.png', breaking=True, 
+draw_map.height_pressure(time, press, heightprs ,pr_height='500', place='europe',
+                          save_where=r'C:\Users\Kutay\visjobs\picturing\height_prs{}.png', breaking=False, 
                           title_on=True ,owner_name='Kutay DÖNMEZ',plot_main_title=
                          r'GFS 500mb Geopotential Height(m) | Presssure(mb)',
-                         tl5=[0.0047, 0.97100], tl1=[0,1.032])
+                         tl5=[0.0047, 0.98100], tl1=[0,1.022])
 

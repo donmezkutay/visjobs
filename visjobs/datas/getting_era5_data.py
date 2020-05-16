@@ -64,7 +64,7 @@ def get_era5(variable, username, password, date, coords=[20,47,30,50]):
             for i in time_vals:
                 tm = date + timedelta(hours=i)
                 tm_list.append(tm)
-            print(tm_list)
+           
             xr_dt = xr.Dataset({'{}'.format(variable): (['time','isobaric', 'latitude', 'longitude'],  temp_vals) },
                                 coords={  'time'     : tm_list,
                                           'isobaric' : lev_vals,

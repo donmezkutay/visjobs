@@ -6,6 +6,7 @@ import xarray as xr
 import numpy as np
 import netCDF4
 from datetime import datetime
+from datetime import timedelta
 
 def get_yearmonth_era5(username, password, date):
     session_manager.set_session_options(auth=(username, password))

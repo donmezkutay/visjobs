@@ -7,18 +7,33 @@ from siphon.http_util import session_manager
 from datetime import datetime,timedelta
 import xarray as xr
 
-def get_yearmonth_era5(username, password, date, var, hr, coords=[20,47,30,50]):
+def get_yearmonth_era5(username, password, date, var, hr ,coords=[20,47,30,50], level='all'):
+    vrb = {'pv':'060',
+       'crwc':'075',
+       'u':'131',
+       'v':'132',
+       'z':'129',
+       'cswc':'076',
+       'q':'133',
+       'w':'135',
+       'vo':'138',
+       'd':'155', 
+       'r':'157',
+       'clwc':'246',
+       'ciwc':'247',
+       'cc':'248',
+       'o3':'203'}
     session_manager.set_session_options(auth=(username, password))
     cat = TDSCatalog('https://rda.ucar.edu/thredds/catalog/files/g/ds633.0/e5.oper.an.pl/{}/catalog.xml'
                      .format(date[:6]))
-    datasetName = "e5.oper.an.pl.128_060_{}.ll025sc.{}00_{}23.nc".format(var, date, date)  
-    ds = catalog.datasets[datasetName]    
-    dates = '20180101'
+    datasetName = "e5.oper.an.pl.128_{}_{}.ll025sc.{}00_{}23.nc".format(vrb[var], var, date, date)  
+    ds = cat.datasets[datasetName]    
     f = ds.subset()
     query = f.query()
     query.lonlat_box(north=coords[3], south=coords[2], east=coords[1], west=coords[0])
-    start = datetime(int(dates[:4]),int(dates[4:6]),int(dates[6:]))
+    start = datetime(int(date[:4]),int(date[4:6]),int(date[6:]))
     end   = start + timedelta(hours=hr) 
+    query.vertical_level(level)
     query.time_range(start,end)
     query.accept('netcdf4')
     query.variables('all')

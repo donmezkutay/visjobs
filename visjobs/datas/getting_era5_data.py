@@ -25,7 +25,7 @@ def get_yearmonth_era5(username, password, date, var, hr, coords=[20,47,30,50]):
     data = f.get_data(query)
     return data
 
-def get_era5(data,variable ,username, password, date, coords=[20,47,30,50]):
+def get_era5(data, date, coords=[20,47,30,50]):
     """interval must be given as yearmonthday such as 20180101 as str
        variable: desired variable
        interval: time interval in the form of indicated above"""

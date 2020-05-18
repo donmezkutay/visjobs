@@ -22,11 +22,29 @@ def get_yearmonth_era5(username, password, date, var, hr ,coords=[20,47,30,50], 
        'clwc':'246',
        'ciwc':'247',
        'cc':'248',
-       'o3':'203'}
+       'o3':'203',
+       't':'130'}
+    
+    code = {'pv':'sc',
+       'crwc':'sc',
+       'u':'uv',
+       'v':'uv',
+       'z':'sc',
+       'cswc':'sc',
+       'q':'sc',
+       'w':'sc',
+       'vo':'sc',
+       'd':'sc', 
+       'r':'sc',
+       'clwc':'sc',
+       'ciwc':'sc',
+       'cc':'sc',
+       'o3':'sc',
+       't':'sc'}
     session_manager.set_session_options(auth=(username, password))
     cat = TDSCatalog('https://rda.ucar.edu/thredds/catalog/files/g/ds633.0/e5.oper.an.pl/{}/catalog.xml'
                      .format(date[:6]))
-    datasetName = "e5.oper.an.pl.128_{}_{}.ll025sc.{}00_{}23.nc".format(vrb[var], var, date, date)  
+    datasetName = "e5.oper.an.pl.128_{}_{}.ll025{}.{}00_{}23.nc".format(vrb[var], var, code[var], date, date)  
     ds = cat.datasets[datasetName]    
     f = ds.subset()
     query = f.query()

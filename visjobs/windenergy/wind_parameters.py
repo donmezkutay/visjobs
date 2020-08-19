@@ -1,22 +1,9 @@
 ### !/usr/bin/env python
 # coding: utf-8
-import warnings
-warnings.filterwarnings("ignore")
-from siphon.catalog import TDSCatalog
 import xarray as xr
-import matplotlib.pyplot as plt
-from datetime import datetime,timedelta
-import cartopy
-from scipy.interpolate import griddata
 import numpy as np
 import matplotlib as mpl
-import scipy.ndimage as ndimage
-import matplotlib.colors as mcolors
-from netCDF4 import num2date
-from matplotlib.animation import ArtistAnimation
-import pylab as pl
 import numpy as np
-import matplotlib.animation as animation
 import metpy.calc as mpcalc
 from metpy.units import units
 

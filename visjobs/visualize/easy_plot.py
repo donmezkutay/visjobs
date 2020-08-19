@@ -6,21 +6,12 @@
 
 #!/usr/bin/env python
 # coding: utf-8
-import warnings
-warnings.filterwarnings("ignore")
 import xarray as xr
 import matplotlib.pyplot as plt
 from datetime import datetime,timedelta
 import cartopy
-import numpy as np
 import matplotlib as mpl
-import scipy.ndimage as ndimage
-import matplotlib.colors as mcolors
-from netCDF4 import num2date
-from matplotlib.animation import ArtistAnimation
 import numpy as np
-import matplotlib.animation as animation
-import matplotlib.ticker as mticker
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER , LATITUDE_FORMATTER
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 

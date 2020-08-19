@@ -3,7 +3,6 @@
 from siphon.catalog import TDSCatalog
 import matplotlib.pyplot as plt
 import numpy as np
-from siphon.http_util import session_manager
 from datetime import datetime,timedelta
 import xarray as xr
 

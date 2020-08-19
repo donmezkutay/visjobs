@@ -1,19 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
-import warnings
-warnings.filterwarnings("ignore")
 import xarray as xr
 import matplotlib.pyplot as plt
 from datetime import datetime,timedelta
 import cartopy
-import numpy as np
 import matplotlib as mpl
-import scipy.ndimage as ndimage
-import matplotlib.colors as mcolors
-from netCDF4 import num2date
-from matplotlib.animation import ArtistAnimation
 import numpy as np
-import matplotlib.animation as animation
 
 def arrangements_of_extras(title1=[], title2=[], title3=[], title4=[], title5=[]):
     return title1, title2, title3, title4, title5

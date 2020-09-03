@@ -71,16 +71,16 @@ class painter():
         if ax == None:
             ax = self.paint_ax(check_proj=True, proj='Mercator')
             
-        lands = ax.add_feature(cartopy.feature.COASTLINE.with_scale(res) , facecolor = facecolor, **kwargs)
+        lands = ax.add_feature(cartopy.feature.LAND.with_scale(res) , facecolor = facecolor, **kwargs)
         return lands
     #let's define the ocean feature using cartopy
     def paint_ocean(self, ax=None, linewidths = 0.4, facecolor='lightblue', res='50m', **kwargs):
-        """returns axis with land from cartopy"""
+        """returns axis with ocean from cartopy"""
         #check if axis exists
         if ax == None:
             ax = self.paint_ax(check_proj=True, proj='Mercator')
             
-        oceans = ax.add_feature(cartopy.feature.COASTLINE.with_scale(res), facecolor = facecolor, linewidths = linewidths, **kwargs)
+        oceans = ax.add_feature(cartopy.feature.OCEAN.with_scale(res), facecolor = facecolor, linewidths = linewidths, **kwargs)
         return oceans
         
     #let's define the states feature using cartopy
@@ -91,6 +91,26 @@ class painter():
             ax = self.paint_ax(check_proj=True, proj='Mercator')
         states = ax.add_feature(cartopy.feature.STATES.with_scale(res) , linewidths = linewidths, **kwargs)
         return states
+    
+    #let's define the lakes feature using cartopy
+    def paint_lakes(self, ax=None, linewidths = 0.4, facecolor='lightblue', res='50m', **kwargs):
+        """returns axis with lakes from cartopy"""
+        #check if axis exists
+        if ax == None:
+            ax = self.paint_ax(check_proj=True, proj='Mercator')
+            
+        lakes = ax.add_feature(cartopy.feature.LAKES.with_scale(res), facecolor = facecolor, linewidths = linewidths, **kwargs)
+        return lakes
+    
+    #let's define the rivers feature using cartopy
+    def paint_rivers(self, ax=None, linewidths = 0.4, color='lightblue', res='50m', **kwargs):
+        """returns axis with rivers from cartopy"""
+        #check if axis exists
+        if ax == None:
+            ax = self.paint_ax(check_proj=True, proj='Mercator')
+            
+        rivers = ax.add_feature(cartopy.feature.RIVERS.with_scale(res), color = color, linewidths = linewidths, **kwargs)
+        return rivers
     
     #let's define our extent 
     def paint_extent(self, ax=None, lon_lat=[], **kwargs):

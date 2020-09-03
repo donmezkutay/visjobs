@@ -7,96 +7,111 @@ import numpy as np
 
 
 #learn if the latest wanted or the desired date from user?
-def pick_data(year=None, month=None, day=None, hour=None, latest=False, model='GFS', hourly=False, resolution=0.25):
+def pick_data(year=None, month=None, day=None, hour=None, latest=False, model='GFS', hourly=False, resolution=0.25,
+              *args, **kwargs):
+    """Returns Xarray Dataset of the relevant atmospheric model data
     
+        year       :str;
+        month      :str; (eg. Instead of '1' input '01')
+        day        :str; (eg. Instead of '1' input '01')
+        hour       :str; Options: '18', '12', '06', '00' [Should be given]
+        latest     :Boolean (If Latest=True given date is no more importance)
+        model      :str; Options: 'GFS', 'NAM', 'GEFS' 
+        hourly     :Boolean; (Only valid for GFS Data please choose model=GFS for this feature)
+        Resolution :int; (Only valid for GFS Data)"""
     
-    #multiply resolution with 10
+    #Check if user has passed a valid obligatory hour
+    try:
+        if hour != None:
+            pass
+    except:
+        print("""Error --> Even If you indicate Latest=True, please input the run hour..
+                               Options: '18', '12', '06', '00'
+                  """)
+        raise
+            
+    
+    #multiply resolution with 10 (only for GFS)
     resolution = int(np.multiply(resolution,100))
     
-    #indicate available models
-    models = np.array(['GFS', 'NAM'])
+    #available models
+    models = np.array(['GFS', 'NAM', 'GEFS'])
     
-    #available times
+    #available hours
     hours = np.array(['18','12','06','00'])
     
     #check user only inputs hourly and GFS together not any else option 
-    if hourly == True and model=='NAM':
-        print('Error --> model=NAM and hourly=NAM choices can not be done together..')
+    if model in ['NAM', 'GEFS'] and hourly == True:
+        print('Error --> model={} and hourly=True choices can not be done together..'.format(model))
         raise
     
-    #Now if model is models[0] get the relevant data querying if latest agreement or specified date.
-    if model == models[0]:
-        if latest==True:
-            # get the latest year,month,day
-            time = datetime.utcnow()
-            year = str(time.year)
-            month = time.month
-            day=time.day
-            if month<10:
-                month = str(0)+str(month)
-            if day<10:
-                day = str(0)+ str(day)
-            if hourly == False:
-            
-            #check which hour of model is run latest.First checking 18Z if exists
-            
-                data = xr.open_dataset(r'http://nomads.ncep.noaa.gov:80/dods/gfs_0p{}/gfs{}/gfs_0p{}_{}z'.
-                                       format(resolution, str(year)+str(month)+str(day), resolution, hour))
-            elif hourly == True:
-            
-                data = xr.open_dataset(r'http://nomads.ncep.noaa.gov:80/dods/gfs_0p{}_1hr/gfs{}/gfs_0p{}_1hr_{}z'.
-                                       format(resolution, str(year)+str(month)+str(day), resolution, hour))
-                 
-        #this case date is already is given
-        elif latest==False:
-           
-            if hourly == False:
-                data = xr.open_dataset(r'http://nomads.ncep.noaa.gov:80/dods/gfs_0p{}/gfs{}/gfs_0p{}_{}z'.
-                                       format(resolution, str(year)+str(month)+str(day), resolution, str(hour)))
-            elif hourly == True:
-                data = xr.open_dataset(r'http://nomads.ncep.noaa.gov:80/dods/gfs_0p{}_1hr/gfs{}/gfs_0p{}_1hr_{}z'.
-                                       format(resolution, str(year)+str(month)+str(day), resolution, str(hour)))
-                
-    
-    elif model == models[1]:
-        if latest==True:
-            # get the latest year,month,day
-            time = datetime.utcnow()
-            year = str(time.year)
-            month = time.month
-            day=time.day
-            if month<10:
-                month = str(0)+str(month)
-            if day<10:
-                day = str(0)+ str(day)
-            
-            #check which hour of model is run latest.First checking 18Z if exists
-            
-            data = xr.open_dataset(r'https://nomads.ncep.noaa.gov:9090/dods/nam/nam{}/nam_{}z'.
-                                       format(str(year)+str(month)+str(day), hour))
-                   
-        #this case, date is already is given
-        elif latest==False:
-            
-            data = xr.open_dataset(r'https://nomads.ncep.noaa.gov:9090/dods/nam/nam{}/nam_{}z'.
-                                       format(str(year)+str(month)+str(day),str(hour)))
-                
+    #Checking if user asking for the latest data, or the user indicates a specific date..
+    if latest == True:
         
+        # get the latest year,month,day
+        time = datetime.utcnow()
+        year = str(time.year)
+        month = time.month
+        day=time.day
+        if month<10:
+            month = str(0)+str(month)
+        if day<10:
+            day = str(0)+ str(day)
+    
+    if latest == False:
+        
+        
+        if year and month and day is not None:
+            pass
+        
+        else:
+            print('Error --> Please input year, month and day for latest=False'.format(model))
+            raise
+            
+        
+    #GFS
+    if model == models[0]:
+        
+        if hourly == False:
+
+            data = xr.open_dataset(r'http://nomads.ncep.noaa.gov:80/dods/gfs_0p{}/gfs{}/gfs_0p{}_{}z'.
+                                     format(resolution, str(year)+str(month)+str(day), resolution, hour), 
+                                     *args, **kwargs)
+        elif hourly == True:
+
+            data = xr.open_dataset(r'http://nomads.ncep.noaa.gov:80/dods/gfs_0p{}_1hr/gfs{}/gfs_0p{}_1hr_{}z'.
+                                     format(resolution, str(year)+str(month)+str(day), resolution, hour),
+                                     *args, **kwargs)
+        
+    #NAM
+    elif model == models[1]:
+        
+        data = xr.open_dataset(r'http://nomads.ncep.noaa.gov:80/dods/nam/nam{}/nam_{}z'.
+                                 format(str(year)+str(month)+str(day), hour),
+                                 *args, **kwargs)
+    #GEFS
+    elif model == models[2]:
+        
+        data = xr.open_dataset(r'http://nomads.ncep.noaa.gov:80/dods/gens_bc/gens{}/gep_all_{}z'.
+                                 format(str(year)+str(month)+str(day), hour),
+                                 *args, **kwargs)
+            
 
     return data
 
 #now with this function we will be able to specifize the area we are interested and also the variables.
 def pick_area(data ,total_process, interval ,list_of_vars, list_of_areas, init_time=0, pr_height=None, ):
     """ Returns time_with_interval and the dictionary of the areas with variables
-        data = NAM or GFS xarray DataArray should be given
-        total_process = (int) means the until which time step data is expected (1 or 2 or 100 etc.)
-        interval = (int) means until the expected time step in which interval it should go.
-        list_of_vars = the list of variables can be also a single element list:
-                                the variable names can be found at:
-                                https://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20200326/gfs_0p25_06z_anl.info
+     
+        data          :str; 'GFS', 'NAM' or 'GEFS' Xarray DataArray should be given
+        total_process :int; means the until which time step data is expected (1 or 2 or 100 etc.)
+        interval      :int; means until the expected time step in which interval data should be taken.
+        list_of_vars  :list of str; (Data variable names) the list of variables can be also a single element list:
                                 
-        list_of_areas = the list of areas can be also a single element: available options:
-                -->['europe','northamerica','australia','gulfofmexico','carribeans','indianocean']
+                                
+        list_of_areas :list of str; the list of areas can be also a single element: 
+                                    available options:
+                                    ['europe','northamerica','australia','gulfofmexico','carribeans','indianocean']
     """
     
     

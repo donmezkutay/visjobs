@@ -65,7 +65,7 @@ def pick_data(year=None, month=None, day=None, hour=None, latest=False, model='G
             pass
         
         else:
-            print('Error --> Please input year, month and day for latest=False'.format(model))
+            print('Error --> Please input year, month and day for latest=False')
             raise
             
         
@@ -99,7 +99,7 @@ def pick_data(year=None, month=None, day=None, hour=None, latest=False, model='G
 
     return data
 
-#now with this function we will be able to specifize the area we are interested and also the variables.
+#now with this function we will be able to specify the area we are interested and also the variables.
 def pick_area(data ,total_process, interval ,list_of_vars, list_of_areas, init_time=0, pr_height=None, ):
     """ Returns time_with_interval and the dictionary of the areas with variables
      
@@ -116,9 +116,10 @@ def pick_area(data ,total_process, interval ,list_of_vars, list_of_areas, init_t
     
     
     
-    #trying if the longitude values from 0 to 360 or -180 to 180?
+    #trying if the longitude values change from 0 to 360 or -180 to 180?
     
     if data['tmp2m']['lon'].values[0] < 0:
+        
         p_d = {'europe' : [0, 48, 30, 65],
               'northamerica' : [-142,-42,0,60],
               'australia' : [80,180,-50,10],
@@ -129,7 +130,7 @@ def pick_area(data ,total_process, interval ,list_of_vars, list_of_areas, init_t
                                                                   
     # -180 to 180 change the values given in the dictionary to relevant
     else:
-        #places avaliable for return its data
+        
         p_d = {'europe' : [0, 48, 30, 65],
               'northamerica' : [218,318,-10,70],
               'australia' : [80,180,-50,10],
@@ -139,7 +140,6 @@ def pick_area(data ,total_process, interval ,list_of_vars, list_of_areas, init_t
               'NH' : [0, 360 ,0,90]}
         
     
-    #constructing important list and dict for the loop
     
     places_dict = {}
     #looping in the list of areas

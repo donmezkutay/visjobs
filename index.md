@@ -68,9 +68,9 @@ Let's say we want to pull MSLP and 500 mb Geopotential Height variables from our
 time, area_dict = get_data.pick_area(
                             data, init_time=0, 
                             total_process=2, interval=1, 
-				            list_of_vars=['prmslmsl','hgtprs'],
-				            pr_height=['500'],
-                          	list_of_areas=['northamerica','europe'])
+		            list_of_vars=['prmslmsl','hgtprs'],
+		            pr_height=['500'],
+                            list_of_areas=['northamerica','europe'])
 ```
 here;
 * data: Xarray dataset must be given
@@ -111,9 +111,9 @@ time, area_dict = get_data.pick_area(
                             data, init_time=0, 
                             total_process=3, interval=1, 
                             pr_height=['500'],
-				            list_of_areas=['northamerica'],
-				            list_of_vars=['prmslmsl','ugrd10m',
-				                          'vgrd10m'],)
+			    list_of_areas=['northamerica'],
+			    list_of_vars=['prmslmsl','ugrd10m',
+				          'vgrd10m'],)
 #start easy_job instance
 m = easy_plot.painter()
 

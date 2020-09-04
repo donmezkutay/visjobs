@@ -2,99 +2,211 @@
 
 Visjobs offers plotting effective variables in effective way using atmospheric models.
 
-## Installation
+## 1.Installation
+#### 1.1. Pypi Installation
+- pip install visjobs
 
-- git clone https://github.com/donmezk/visjobs
-- Clone in the same directory the code is written.
+#### 1.2. Github Clone
+- git clone https://github.com/donmezkutay/visjobs
 
-### Some example about how to use Visjobs
+## 2. Usage
+Once you installed visjobs, you can easily get the latest atmospheric model data including GFS, GEFS, and NAM.
 
-- WE WILL BE PLOTTING THE 500MB GEOPOTENTIAL HEIGHT | MEAN SEA LEVEL PRESSURE FOR NORTH AMERICA
-- importing dependencies.
-```python
-
+#### 2.1. Getting The Xarray Dataset
+##### GFS (0.25 Degree)
+Get the latest 12 UTC GFS (0.25 Degree) 3 hourly Data.
+This wil return Xarray Dataset.
+``` python
 from visjobs.datas import get_data
-from visjobs.visualize import draw_map
+data = get_data.pick_data(hour='12',latest=True,
+                          model='GFS', hourly=False,
+                          resolution = 0.25)
+```
+
+##### GFS (0.50 Degree)
+Get yesterday's 00 UTC GFS (0.25 Degree) 1 hourly Data.
+Change year/month/day with your yesterday (Available until previous week).
+``` python
+data = get_data.pick_data(year='2020', month='09',day='03',
+                          hour='00', latest=False,
+                          model='GFS', hourly=True)
+```
+
+##### GEFS (0.50 Degree)
+Get 3 days before's 06 UTC GEFS (0.50 Degree) 3 hourly Data.
+Change year/month/day with your yesterday (Available until previous week).
+``` python
+data = get_data.pick_data(year='2020', month='09',day='01',
+                          hour='06', latest=False,
+                          model='GEFS', hourly=False)
+``` 
+
+##### NAM (12 km / CONUS)
+Get the latest 18 UTC NAM (12 km) 3 hourly Data.
+Change year/month/day with your yesterday (Available until previous week).
+``` python
+data = get_data.pick_data(hour='18', latest=True,
+                          model='NAM', hourly=False)
+``` 
+##### Using DASK Chunks with Xarray
+You can also get the model data with dask chunks such as:
+``` python
+data = get_data.pick_data(hour='18', latest=True,
+                          model='GFS', hourly=False,
+                          chunks = {'time': -1,
+                                    'lon' : 80,
+                                    'lat' : 80,
+                                    'lev' : -1 })
+``` 
+
+#### 2.2. Arranging The Xarray Dataset
+Visjobs has a function that will return desired model variables for some of the pre-defined specific world regions including Europe, North America, Australia etc.  
+
+Let's say we want to pull MSLP and 500 mb Geopotential Height variables from our previously defined Xarray dataset <data> for North America and Europe.
+```python
+
+time, area_dict = get_data.pick_area(
+                            data, init_time=0, 
+                            total_process=2, interval=1, 
+		            list_of_vars=['prmslmsl','hgtprs'],
+		            pr_height=['500'],
+                            list_of_areas=['northamerica','europe'])
+```
+here;
+* data: Xarray dataset must be given
+* total_process: means until which time step the data is asked [int]
+* interval: means until the asked time step, with which interval time step will go [int]
+* init_time: means the initial time step of the data [int]
+* list_of_vars: the desired variables in list [str]
+* list_of_areas: the desired areas in list [str]
+* pr_height: the desired pressure heights in list [str]
+
+With one code step forward you can seperate the data you choose into appropriate pieces:
+```python
+mslp_NA = np.divide(area_dict['northamerica'][0], 100)
+mslp_E  = np.divide(area_dict['europe'][0], 100)
+
+height_NA = area_dict['northamerica'][1]
+height_E  = area_dict['europe'][1]
+```
+
+#### 2.3. Visualizing the Xarray Dataset
+Until now, we show some of the capabilities of the visjobs. Yet, Of course the visualization of the data is maybe the most important part of the analysis.
+
+So, now on, we will be writing a code that uses the abilities of the visjobs to get the dataset and arrange it. And then we will be visualizing it using visjobs easy_plot function.
+
+Here we will be getting the latest 06 UTC GFS (0.25 Degree) data, picking the MSLP and 10m U,V Wind variables in the dataset and plotting them for Gulf Of Mexico.
+```python
+from visjobs.datas import get_data
+from visjobs.visualize import easy_plot
 import xarray as xr
+import matplotlib.pyplot as plt
+import proplot as plot
 import numpy as np
+import cartopy
 
-```
-------------
+data = get_data.pick_data(latest=True, hour='06', model='GFS')
 
+time, area_dict = get_data.pick_area(
+                            data, init_time=0, 
+                            total_process=3, interval=1, 
+                            pr_height=['500'],
+			    list_of_areas=['northamerica'],
+			    list_of_vars=['prmslmsl','ugrd10m',
+				          'vgrd10m'],)
+#start easy_job instance
+m = easy_plot.painter()
 
-+ Getting the data using pick_data function.
-+ Function pick_data():
-    * hour=06      --> means the 06Z run of the model 
-    * latest=True  --> means the latest output with 06Z run
-    * model='GFS'  --> means GFS data is choosen ['NAM' is also available]
-    * hourly=False --> means GFS 3 hourly data is asked [not valid for NAM]
+#paint features
+ax = m.paint_ax(1,1,1, check_proj=True)
+m.paint_borders(ax=ax, res='10m', zorder=4, 
+                linewidths=1.5, edgecolor='red' )
 
-```python
+m.paint_states(ax=ax, res='10m', zorder=4, 
+               linewidths=1.5, edgecolor='red' )
 
-data = get_data.pick_data(hour='06',latest=True,model='GFS',
-			  hourly=False)
-```
-+ Note that data taken is xarray DataArray.
+m.paint_lakes(ax=ax, res='10m', zorder=4, 
+              linewidths=1.5, edgecolor='red' )
 
-------------
+m.paint_land(ax=ax, res='10m', zorder=1)
+m.paint_coastline(ax=ax, res='10m', zorder=3, 
+                  linewidths=1.5, edgecolor='red')
 
+m.paint_extent(ax=ax, lon_lat=[260,292,20,40])
+m.set_lonlat(ax=ax, sizing=18)
+m.set_size(ax=ax, a=21, b=19)
 
-+ In below using xarray DataArray,  we are deciding the interval of desired latitude and longitude.
-+ Returns a dictionary.
-+ Function pick_area():
-    * data          --> Xarray data must be given
-    * total_process --> means until which time step the data is asked
-    * interval      --> means until the asked time step, with what interval time step will go
-    * init_time     --> means the initial time step of the data
-    * list_of_vars  --> the desired variables in list [str]
-    * list_of_areas --> the desired areas in list [str]
-    * pr_height     --> the desired pressure heights in list [int]
+#set interval
+wind_int = m.set_arange(0, 100, 1, method='arange')
+prs_int  = m.set_arange(930, 1060, 2, method='arange')
     
-```python
 
-time, area_dict = get_data.pick_area(data, total_process=2, interval=1, init_time=0, 
-				     list_of_vars=['prmslmsl','hgtprs'],pr_height=['500'],
-                          	     list_of_areas=['northamerica','europe'])
-```
+#plot the pressure contour
+mesh_hgt = m.plot_contour(lon, lat, prs[0], 
+                          prs_int, colors='k', 
+                          ax=ax,  linewidths=2, 
+                          transform='PlateCarree', 
+                          zorder=6, linestyles='solid')
 
-+ Let's say I want to plot 500mb heights and mslp for North America.
-+ In the upper part I got the relevant data using pick_area function.
-+ Now assign each single data from the whole dictionary.
-```
-press = np.divide(area_dict['northamerica'][0], 100)
-heightprs = area_dict['northamerica'][1]
-```
+m.plot_clabel(mesh_hgt, fontsize=30, 
+              inline=1, inline_spacing=7,
+              fmt='%i', rightside_up=True,
+              use_clabeltext=True , 
+              ax=ax, zorder=5)
+              
+#plot the wind contourf
+mesh_2 = m.plot_contourf(lon, lat, ww[0], 
+                         wind_int, transform='PlateCarree',
+                         cmap=cmap,  ax=ax, zorder=2 )
 
-- Choosing the desired plot size.
+#plot the colorbar
+cb = m.plot_colorbar(mappable=mesh_2, location='right',
+                     size='3%', pad='2%', ax=ax, sizing=17 )
+    
+#set validation times
+valid = uw['time'][0].values 
+valid = str(valid)[0:13]
+init  = str(uw['time'].attrs['grads_min'])
 
-```python
-from pylab import rcParams
-rcParams['figure.figsize'] = 21, 24
-```
+#set titles
+title1 = m.set_title(title='10m WIND SPEED (km/h) | MSLP (hPa)',
+                     ax=ax, fontsize=30, up=1.016, 
+                     weight='heavy',style='italic',
+                     transform=ax.transAxes)
 
-+ In below using height_pressure function we will plot 500mb Height-Pressure graphic
-+ Function height_pressure():
-    * time       --> the loop initiated from the init_time indicated above function until the 'time'
-    * press      --> xarray input for pressure
-    * heightprs  --> xarray input for height
-    * pr_height  --> the desired pressure height
-    * place      --> the area which the user wants to plot
-    * save_where --> where to save the figure
-    * breaking   --> if True, the function will stop after one loop
-    * title_on   --> if True, the title must be introduced, default is False
-    * ----------------------------------------------------------------------
-        * if only the title_on = True, apply inputs below
-    * owner_name = the box in the upper left corner of the plot
-    * plot_main_tite 	       --> main title that is going to be plotted in string
-    * tl1, tl2, tl3, tll4, tl5 --> set the title's placement [a,b] (int list)
+title2 = m.set_title(title='Init: {}'.format(init),
+                     right=0, up=-0.1020,ax=ax, 
+                     fontsize=21, style='italic', 
+                     transform=ax.transAxes)
 
-```python
-draw_map.height_pressure(time, press, heightprs ,pr_height='500', place='northamerica',
-                         save_where=r'height_prs{}.png',
-			 breaking=True, title_on=True ,owner_name='Kutay DÖNMEZ',
-			 plot_main_title=r'GFS 500mb Geopotential Height(m) | Presssure(mb)',
-                         tl5=[0.0047, 0.97100], tl1=[0,1.032])
+title3 = m.set_title(title='Data: GFS 0.25°'.format(init),
+                     right=0, up=-0.0720,ax=ax,
+                     fontsize=21, style='italic', 
+                     transform=ax.transAxes)
+
+title4 = m.set_title(title='Codes: github.com/donmezkutay',
+                     right=0, up=-0.1320,ax=ax, 
+                     fontsize=21, style='italic', 
+                     weight='heavy', transform=ax.transAxes)
+
+title5 = m.set_title(title='Valid: {}'.format(valid),
+                     right=0.650, up=-0.0920, ax=ax,
+                     fontsize=30, weight='heavy',
+                     style='italic', color='red', 
+                     transform=ax.transAxes,
+                     bbox=dict(boxstyle="square",alpha=0.7,
+                               ec='red',
+                               fc='white',
+                               ))
+
+title6 = m.set_title(title='visjobs', color='k', right=0.00690,
+                     up=0.9652000, ax=ax, size=25, zorder=17,
+                     style='italic',transform=ax.transAxes,
+                     bbox=dict(boxstyle="square",alpha=0.7,
+                               ec='black',
+                               fc='white',
+                               ))
 ```
 plot result:
-https://pasteboard.co/J1HhgsF.png
-![]('https://pasteboard.co/J1HhgsF.png')
+https://pasteboard.co/JpxKXQC.png
+

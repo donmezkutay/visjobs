@@ -21,6 +21,7 @@ Visjobs offers plotting effective variables in effective way using atmospheric m
 
 ## 2. Usage
 Once you installed visjobs, you can easily get the latest atmospheric model data including GFS, GEFS, and NAM.
+You can also get the GHCN(Global Historical Climatology Network) observation data for each station.
 
 #### 2.1. Getting The Xarray Dataset
 ##### GFS (0.25 Degree)
@@ -58,6 +59,7 @@ Change year/month/day with your yesterday (Available until previous week).
 data = get_data.pick_data(hour='18', latest=True,
                           model='NAM', hourly=False)
 ``` 
+
 ##### Using DASK Chunks with Xarray
 You can also get the model data with dask chunks such as:
 ``` python
@@ -67,6 +69,19 @@ data = get_data.pick_data(hour='18', latest=True,
                                     'lon' : 80,
                                     'lat' : 80,
                                     'lev' : -1 })
+``` 
+
+##### GHCN Observation Data
+Get GHCN Climatology data for station ID:'TUM00017064' (Istanbul Bolge-Kartal).
+This will return Pandas DataFrame.
+``` python
+from visjobs.datas import get_GHCN as ghc
+dt = ghc.get_data_with_station('TUM00017300')
+``` 
+
+For users want to easily access to Turkey's station IDs, the code below will return avaliable IDs for Turkey
+``` python
+ghc.get_turkey_ID()
 ``` 
 
 #### 2.2. Arranging The Xarray Dataset

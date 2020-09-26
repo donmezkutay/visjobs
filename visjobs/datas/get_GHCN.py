@@ -104,15 +104,12 @@ data_col_dtypes = [{
     for i in range(31)]
 data_header_dtypes.update({k: v for d in data_col_dtypes for k, v in d.items()})
 
-def read_ghcn_data_file(filename,
-                        variables=None, include_flags=False,
-                        dropna='all'):
+def read_ghcn_data_file(filename):
     """Reads in all data from a GHCN .dly data file
 
     :param filename: path to file
     :param variables: list of variables to include in output dataframe
         e.g. ['TMAX', 'TMIN', 'PRCP']
-    :param include_flags: Whether to include data quality flags in the final output
     :returns: Pandas dataframe
     """
 
@@ -124,20 +121,17 @@ def read_ghcn_data_file(filename,
         dtype=data_header_dtypes
         )
 
-    if variables is not None:
-        df = df[df.index.get_level_values('ELEMENT').isin(variables)]
-
     df.columns = data_replacement_col_names
 
-    if not include_flags:
-        df = df.loc[:, ('VALUE', slice(None))]
-        df.columns = df.columns.droplevel('VAR_TYPE')
+    
+    df = df.loc[:, ('VALUE', slice(None))]
+    df.columns = df.columns.droplevel('VAR_TYPE')
 
     df = df.stack(level='DAY').unstack(level='ELEMENT')
 
-    if dropna:
-        df.replace(-9999.0, pd.np.nan, inplace=True)
-        df.dropna(how=dropna, inplace=True)
+    
+    df.replace(-9999.0, pd.np.nan, inplace=True)
+    df.dropna(how='all', inplace=True)
 
     # replace the entire index with the date.
     # This loses the station ID index column!
@@ -148,7 +142,11 @@ def read_ghcn_data_file(filename,
         df.index.get_level_values('MONTH') * 100 +
         df.index.get_level_values('DAY'),
         format='%Y%m%d')
-
+    
+    df['TAVG'] = df['TAVG'] / 10
+    df['TMIN'] = df['TMIN'] / 10
+    df['TMAX'] = df['TMAX'] / 10
+    df['PRCP'] = df['PRCP'] / 10
     return df
 
 

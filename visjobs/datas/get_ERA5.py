@@ -1,12 +1,11 @@
-"""By Kutay Dönmez"""
+"""By Kutay-Berkay DÖNMEZ"""
 
-from siphon.catalog import TDSCatalog
-import matplotlib.pyplot as plt
-import numpy as np
-from datetime import datetime,timedelta
 import xarray as xr
+import requests
+from pydap.client import open_url
+from pydap.cas.urs import setup_session
 
-def get_yearmonth_era5(username, password, date, var, hr ,coords=[20,47,30,50], level_on=True, level='all'):
+def get_era5_pressure(username, password, date, var, session):
     vrb = {'pv':'060',
        'crwc':'075',
        'u':'131',
@@ -40,55 +39,168 @@ def get_yearmonth_era5(username, password, date, var, hr ,coords=[20,47,30,50], 
        'cc':'sc',
        'o3':'sc',
        't':'sc'}
-    session_manager.set_session_options(auth=(username, password))
-    cat = TDSCatalog('https://rda.ucar.edu/thredds/catalog/files/g/ds633.0/e5.oper.an.pl/{}/catalog.xml'
-                     .format(date[:6]))
-    datasetName = "e5.oper.an.pl.128_{}_{}.ll025{}.{}00_{}23.nc".format(vrb[var], var, code[var], date, date)  
-    ds = cat.datasets[datasetName]    
-    f = ds.subset()
-    query = f.query()
-    query.lonlat_box(north=coords[3], south=coords[2], east=coords[1], west=coords[0])
-    start = datetime(int(date[:4]),int(date[4:6]),int(date[6:]))
-    end   = start + timedelta(hours=hr) 
-    if level_on == True:
-        query.vertical_level(level)
-    query.time_range(start,end)
-    query.accept('netcdf4')
-    query.variables('all')
-    data = f.get_data(query)
-    return data
 
-def get_era5(data, date, coords=[20,47,30,50]):
-    """interval must be given as yearmonthday such as 20180101 as str
-       variable: desired variable
-       interval: time interval in the form of indicated above"""
     
-    v1 = list(data.variables.keys())[-1]
-    temp_var = data.variables[v1]
-    time_var = data.variables['time']
-    lat_var = data.variables['latitude']
-    lon_var = data.variables['longitude']
-    lev_var = data.variables['level']
-    temp_vals = np.array(temp_var)
-    lat_vals = np.array(lat_var)
-    lon_vals = np.array(lon_var)
-    lev_vals = np.array(lev_var)
-    time_vals = time_var[:].squeeze()
-    date = datetime(int(date[:4]),int(date[4:6]),int(date[6:]))
-    time_vals = np.array(time_var[:])
-    tm_list = []
-    for i in time_vals:
-        i = i.astype('float64')
-        tm = datetime(1900,1,1) + timedelta(hours=i)
-        tm_list.append(tm)
-    xr_dt = xr.Dataset({'{}'.format(v1): (['time','isobaric', 'latitude', 'longitude'],  temp_vals) },
-                                coords={  'time'     : tm_list,
-                                          'isobaric' : lev_vals,
-                                          'latitude' : lat_vals,
-                                          'longitude': lon_vals,
-                                         })
+    #get the url
+    ds_url = 'https://rda.ucar.edu/thredds/dodsC/files/g/ds633.0/e5.oper.an.pl/{}/e5.oper.an.pl.128_{}_{}.ll025{}.{}00_{}23.nc'.format(date[:6], vrb[var], var, code[var], date, date)
     
-            
+    #access authorization
+    store = xr.backends.PydapDataStore.open(ds_url,
+                                            session=session)
+    #get data
+    ds = xr.open_dataset(store,  )
+    return ds
+
+def get_pressure_variables(username, password, date, parse='all'):
+    """Gets all the needed pressure ERA5 variables for climaturk"""
+    
+    print('Starting Session')
+    #start the session
+    session = requests.Session()
+    session.auth = (username, password)
+    variables = ['u', 'v', 'z', 'q', 'w', 'vo', 't']
+    dt_list = [] 
+    for vr in variables:
+        d = get_era5_pressure(username, password, date, vr, session)
+        dt_list.append(d)
+        print('Variable {} is taken'.format(vr))
+    
+    if parse is 'all':
+        return dt_list
+    
+    elif parse is 'turkey':
+        turk_lat = slice(50, 30)
+        turk_lon = slice(20, 47)
+        lev_dict = { 'u' :[250, 700], 
+                     'v' :[250, 700], 
+                     'z' :[500, 700, 850], 
+                     'q' :[700], 
+                     'w' :[700],
+                     'vo':[500],
+                     't' :[700, 850]}
+        
+        turk_dt_list = []
+        for i, vr in enumerate(variables):
+            d = dt_list[i].sel(latitude = turk_lat, longitude = turk_lon, level = lev_dict[vr])
+
+            turk_dt_list.append(d)
+        
+        return turk_dt_list
+        
+
+#era5 single data
+def get_era5_single(username, password, date, month, var, session):
+    month_day = {'january':'31',
+                 'march':'31',
+                 'april':'30',
+                 'may':'31',
+                 'june':'30',
+                 'july':'31',
+                 'august':'31',
+                 'september':'30',
+                 'october':'31',
+                 'november':'30',
+                 'december':'31'}
+    
+    vrb = {'aluvp':'015',
+           'aluvd':'016',
+           'alnip':'017',
+           'alnid':'018',
+           'ci':'031',
+           'asn':'032', 
+           'rsn':'033',
+           'sstk':'034',
+           'istl1':'035',
+           'istl2':'036',
+           'istl3':'037',
+           'istl4':'038',
+           'swvl1':'039',
+           'swvl2':'040',
+           'swvl3':'041',
+           'swvl4':'042',
+           'cape':'059',
+           'lailv':'066',
+           'laihv':'067',
+           'tclw':'078',
+           'tciw':'079',
+           'sp':'134',
+           'tcw':'136',
+           'scwv':'137',
+           'stl1':'139',
+           'sd':'141',
+           'chnk':'148',
+           'msl':'151',
+           'blh':'159',
+           'tcc':'164',
+           '10u':'165',
+           '10v':'166',
+           '2t':'167',
+           '2d':'168',
+           'stl2':'170',
+           'stl3':'183',
+           'lcc':'186',
+           'mcc':'187',
+           'hcc':'188',
+           'src':'198',
+           'tco3':'206',
+           'iews':'229',
+           'inss':'230',
+           'ishf':'231',
+           'ie':'232',
+           'skt':'235',
+           'stl4':'236',
+           'tsn':'238',
+           'fal':'243',
+           'fsr':'244',
+           'flsr':'245'
+            }
+    
+    cat = 'https://rda.ucar.edu/thredds/dodsC/files/g/ds633.0/e5.oper.an.sfc/{}/'.format(date[:6])
+    
+    if date[4:6] in ['01','03','04','05','06','07','08','09','10','11','12']:
+        datasetName = "e5.oper.an.sfc.128_{}_{}.ll025sc.{}0100_{}{}23.nc".format(vrb[var], var, date[:6], date[:6], month_day[month])
+    
+    elif date[4:6] == '02':
+        day_count = monthrange(date[:4], 2)[1]
+        datasetName = "e5.oper.an.sfc.128_{}_{}.ll025sc.{}0100_{}{}23.nc".format(vrb[var], var, date[:6], date[:6], str(day_count))
     
     
-    return xr_dt
+    ds_url = cat + datasetName
+    
+    #access authorization
+    store = xr.backends.PydapDataStore.open(ds_url,
+                                            session=session)
+    #get data
+    ds = xr.open_dataset(store, )
+    return ds
+
+def get_single_variables(username, password, date, month, parse='all'):
+    """Gets all the needed single ERA5 variables for climaturk"""
+    
+    print('Starting Session')
+    #start the session
+    session = requests.Session()
+    session.auth = (username, password)
+    variables = ['2t', 'msl', 'cape', '10u', '10v']
+    dt_list = [] 
+    for vr in variables:
+        d = get_era5_single(username, password, date, month, vr, session)
+        dt_list.append(d)
+        print('Variable {} is taken'.format(vr))
+    
+    if parse is 'all':
+        return dt_list
+    
+    elif parse is 'turkey':
+        start_dt = '{}-{}-{}T00:00:00.000000000'.format(date[:4], date[4:6], date[6:8])
+        end_dt = '{}-{}-{}T23:00:00.000000000'.format(date[:4], date[4:6], date[6:8])
+        
+        turk_lat = slice(50, 30)
+        turk_lon = slice(20, 47)
+        
+        turk_dt_list = []
+        for i, vr in enumerate(variables):
+            d = dt_list[i].sel(latitude = turk_lat, longitude = turk_lon, time = slice(start_dt, end_dt))
+            turk_dt_list.append(d)
+        
+        return turk_dt_list

@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="visjobs", # Replace with your own username
-    version="0.0.9",
+    version="0.0.11",
     author="Kutay Donmez & Berkay Donmez",
     author_email="donmezk@outlook.com",
     description="Get The Latest Atmospheric Model Data | Analyse | Visualize Easily",
@@ -15,6 +15,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         "xarray",
+        "pydap",
         "siphon",
         "pandas",
         "numpy",

@@ -147,16 +147,35 @@ import matplotlib.pyplot as plt
 import proplot as plot
 import numpy as np
 import cartopy
+import proplot as plot
 
 data = get_MODEL.pick_data(latest=True, hour='06', model='GFS')
 
 time, area_dict = get_MODEL.pick_area(
                             data, init_time=0, 
                             total_process=3, interval=1, 
-                            pr_height=['500'],
 			    list_of_areas=['northamerica'],
 			    list_of_vars=['prmslmsl','ugrd10m',
 				          'vgrd10m'],)
+
+#Seperate data
+prs = np.divide(area_dict['northamerica'][0], 100)
+u10 = np.multiply(area_dict['northamerica'][1], 1.94384449)
+v10 = np.multiply(area_dict['northamerica'][2], 1.94384449)
+
+#calculate wind speed from u and v wind
+ww = np.sqrt((u10**2) + (v10**2))
+
+#indicate latitude and longitude
+lon = u10['lon']
+lat = u10['lat']
+
+#get cmap
+cmap = plot.Colormap('Blue2','Green5_r',
+    		     'Orange5', 'RedPurple6_r', 'Brown1',
+    		     ratios=(20/88, 14/88, 16/88, 20/88, 18/88), 
+		     name='SciVisColor', save=True)
+
 #start easy_job instance
 m = easy_plot.painter()
 
@@ -180,7 +199,7 @@ m.set_lonlat(ax=ax, sizing=18)
 m.set_size(ax=ax, a=21, b=19)
 
 #set interval
-wind_int = m.set_arange(0, 100, 1, method='arange')
+wind_int = m.set_arange(0, 90, 2, method='arange')
 prs_int  = m.set_arange(930, 1060, 2, method='arange')
     
 
@@ -207,12 +226,12 @@ cb = m.plot_colorbar(mappable=mesh_2, location='right',
                      size='3%', pad='2%', ax=ax, sizing=17 )
     
 #set validation times
-valid = uw['time'][0].values 
+valid = u10['time'][0].values 
 valid = str(valid)[0:13]
-init  = str(uw['time'].attrs['grads_min'])
+init  = str(u10['time'].attrs['grads_min'])
 
 #set titles
-title1 = m.set_title(title='10m WIND SPEED (km/h) | MSLP (hPa)',
+title1 = m.set_title(title='10m WIND SPEED (kt) | MSLP (hPa)',
                      ax=ax, fontsize=30, up=1.016, 
                      weight='heavy',style='italic',
                      transform=ax.transAxes)

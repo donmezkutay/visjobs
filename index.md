@@ -47,7 +47,7 @@ data = get_MODEL.pick_data(year='2020', month='09',day='03',
 
 ##### GEFS (0.50 Degree)
 Get 3 days before's 06 UTC GEFS (0.50 Degree) 3 hourly Data.
-Change year/month/day with your yesterday (Available until previous week).
+Change year/month/day with your 3 days before (Available until previous week).
 ``` python
 data = get_MODEL.pick_data(year='2020', month='09',day='01',
                           hour='06', latest=False,
@@ -56,7 +56,6 @@ data = get_MODEL.pick_data(year='2020', month='09',day='01',
 
 ##### NAM (12 km / CONUS)
 Get the latest 18 UTC NAM (12 km) 3 hourly Data.
-Change year/month/day with your yesterday (Available until previous week).
 ``` python
 data = get_MODEL.pick_data(hour='18', latest=True,
                           model='NAM', hourly=False)

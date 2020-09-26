@@ -4,9 +4,10 @@ Visjobs offers plotting effective variables in effective way using atmospheric m
 
 ## 1.Installation
 
-#### 1.1. Dependencies (Suggestion: Install these packages using Anaconda)
+#### 1.1. Dependencies (Suggestion: Install these packages using Anaconda, if not pip.)
 - xarray
 - pydap
+- twine
 - siphon
 - pandas
 - numpy

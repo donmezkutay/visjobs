@@ -84,6 +84,22 @@ For users want to easily access to Turkey's station IDs, the code below will ret
 ghc.get_turkey_ID()
 ``` 
 
+##### ERA-5 (0.25 Degree)
+Let's say we want to get the ERA-5 0.25 degree hourly data for date 2005-08-29.
+``` python
+from visjobs.datas import get_ERA5
+username = 'rda ucar login username'
+password = 'rda ucar password'
+u, v, z, q, w, vo, t = get_ERA5.get_pressure_variables(username, password, '20050829', parse='all')
+``` 
+
+Also by changing "parse" argument you can narrow down the area for the dataset only to Turkey. Such as:
+``` python
+username = 'rda ucar login username'
+password = 'rda ucar password'
+u, v, z, q, w, vo, t = get_ERA5.get_pressure_variables(username, password, '20050829', parse='turkey')
+``` 
+
 #### 2.2. Arranging The Xarray Dataset
 Visjobs has a function that will return desired model variables for some of the pre-defined specific world regions including Europe, North America, Australia etc.  
 

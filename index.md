@@ -85,12 +85,13 @@ ghc.get_turkey_ID()
 ``` 
 
 ##### ERA-5 (0.25 Degree)
-Let's say we want to get the ERA-5 0.25 degree hourly data for date 2005-08-29.
+Let's say we want to get the ERA-5 0.25 degree hourly pressure and single data for date 2005-08-29.
 ``` python
 from visjobs.datas import get_ERA5
 username = 'rda ucar login username'
 password = 'rda ucar password'
 u, v, z, q, w, vo, t = get_ERA5.get_pressure_variables(username, password, '20050829', parse='all')
+t2, msl, cape, u10, v10 = get_ERA5.get_single_variables(username, password, '20050829', 'august', parse='all')
 ``` 
 
 Also by changing "parse" argument you can narrow down the area for the dataset only to Turkey. Such as:

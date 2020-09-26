@@ -76,7 +76,7 @@ Get GHCN Climatology data for station ID:'TUM00017064' (Istanbul Bolge-Kartal).
 This will return Pandas DataFrame.
 ``` python
 from visjobs.datas import get_GHCN as ghc
-dt = ghc.get_data_with_station('TUM00017300')
+dt = ghc.get_data_with_station('TUM00017064')
 ``` 
 
 For users want to easily access to Turkey's station IDs, the code below will return avaliable IDs for Turkey

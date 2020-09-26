@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
-"""
 
-
-@author: Kutay
-
-"""
 #importing dependencies
-from visjobs.datas import get_data
+from visjobs.datas import get_MODEL
 from visjobs.visualize import draw_map
 import xarray as xr
 import numpy as np

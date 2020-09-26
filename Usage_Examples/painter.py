@@ -5,7 +5,7 @@
 @author: Kutay
 """
 
-from visjobs.datas import get_data
+from visjobs.datas import get_MODEL
 from visjobs.visualize import draw_map
 from visjobs.visualize import easy_plot
 import numpy as np

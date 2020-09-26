@@ -1,25 +1,17 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
 
 get_ipython().system('git clone https://github.com/tomerburg/metlib.git')
 get_ipython().system('git clone https://github.com/donmezk/visjobs.git    ')
 
 
-# In[1]:
-
-
 #get dependencies
-from visjobs.datas import get_data
+from visjobs.datas import get_MODEL
 from visjobs.visualize import easy_plot
 from metlib.diagnostics import met_functions
 import xarray as xr
 import matplotlib.pyplot as plt
-
-
-# In[31]:
 
 
 #getting data and desired variables and desired area
@@ -38,18 +30,12 @@ lat = uw.lat[:].values
 lon = uw.lon[:].values
 
 
-# In[29]:
-
-
 #computing all time steps of the relative vorticity 
 rel_dict = {}
 for i in range(len(uw['time'])):
     rel_vort= met_functions.relvort(uw[i,:,:], vw[i,:,:], lat, lon) * (10**5)
     
     rel_dict[i] = rel_vort 
-
-
-# In[ ]:
 
 
 #setting background style
@@ -113,17 +99,3 @@ for i in range(len(uw['time'])):
     #save figure
     plt.savefig('picturing\map{}'.format(i), bbox_inches='tight', edgecolor='w')
     
-    
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-

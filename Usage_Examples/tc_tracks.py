@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import xarray as xr
-from visjobs.datas import get_data
+from visjobs.datas import get_MODEL
 from visjobs.visualize import easy_plot
 import cartopy
 from matplotlib.collections import LineCollection
@@ -11,7 +11,7 @@ import seaborn as sns
 import matplotlib as mpl
 
 #get atlantic best track data from NHC
-df = pd.read_csv(r'\hurdat2-1851-2018-120319_atlantic.txt', sep=',')
+df = pd.read_csv(r'\hurdat2-1851-2019-052520.txt', sep=',')
 
 #wrap the data
 hur_dict = wrap_tc_data(df)

@@ -159,9 +159,9 @@ time, area_dict = get_MODEL.pick_area(
 				          'vgrd10m'],)
 
 #Seperate data
-prs = np.divide(area_dict['northamerica'][0], 100)
-u10 = np.multiply(area_dict['northamerica'][1], 1.94384449)
-v10 = np.multiply(area_dict['northamerica'][2], 1.94384449)
+prs = np.divide(area_dict['northamerica'][0], 100) #convert to hPa
+u10 = np.multiply(area_dict['northamerica'][1], 1.94384449) #convert to knot
+v10 = np.multiply(area_dict['northamerica'][2], 1.94384449) #convert to knot
 
 #calculate wind speed from u and v wind
 ww = np.sqrt((u10**2) + (v10**2))

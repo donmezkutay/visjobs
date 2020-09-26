@@ -30,8 +30,8 @@ You can also get the GHCN(Global Historical Climatology Network) observation dat
 Get the latest 12 UTC GFS (0.25 Degree) 3 hourly Data.
 This wil return Xarray Dataset.
 ``` python
-from visjobs.datas import get_data
-data = get_data.pick_data(hour='12',latest=True,
+from visjobs.datas import get_MODEL
+data = get_MODEL.pick_data(hour='12',latest=True,
                           model='GFS', hourly=False,
                           resolution = 0.25)
 ```
@@ -40,7 +40,7 @@ data = get_data.pick_data(hour='12',latest=True,
 Get yesterday's 00 UTC GFS (0.25 Degree) 1 hourly Data.
 Change year/month/day with your yesterday (Available until previous week).
 ``` python
-data = get_data.pick_data(year='2020', month='09',day='03',
+data = get_MODEL.pick_data(year='2020', month='09',day='03',
                           hour='00', latest=False,
                           model='GFS', hourly=True)
 ```
@@ -49,7 +49,7 @@ data = get_data.pick_data(year='2020', month='09',day='03',
 Get 3 days before's 06 UTC GEFS (0.50 Degree) 3 hourly Data.
 Change year/month/day with your yesterday (Available until previous week).
 ``` python
-data = get_data.pick_data(year='2020', month='09',day='01',
+data = get_MODEL.pick_data(year='2020', month='09',day='01',
                           hour='06', latest=False,
                           model='GEFS', hourly=False)
 ``` 
@@ -58,14 +58,14 @@ data = get_data.pick_data(year='2020', month='09',day='01',
 Get the latest 18 UTC NAM (12 km) 3 hourly Data.
 Change year/month/day with your yesterday (Available until previous week).
 ``` python
-data = get_data.pick_data(hour='18', latest=True,
+data = get_MODEL.pick_data(hour='18', latest=True,
                           model='NAM', hourly=False)
 ``` 
 
 ##### Using DASK Chunks with Xarray
 You can also get the model data with dask chunks such as:
 ``` python
-data = get_data.pick_data(hour='18', latest=True,
+data = get_MODEL.pick_data(hour='18', latest=True,
                           model='GFS', hourly=False,
                           chunks = {'time': -1,
                                     'lon' : 80,
@@ -109,7 +109,7 @@ Visjobs has a function that will return desired model variables for some of the 
 Let's say we want to pull MSLP and 500 mb Geopotential Height variables from our previously defined Xarray dataset <data> for North America and Europe.
 ```python
 
-time, area_dict = get_data.pick_area(
+time, area_dict = get_MODEL.pick_area(
                             data, init_time=0, 
                             total_process=2, interval=1, 
 		            list_of_vars=['prmslmsl','hgtprs'],
@@ -141,7 +141,7 @@ So, now on, we will be writing a code that uses the abilities of the visjobs to 
 
 Here we will be getting the latest 06 UTC GFS (0.25 Degree) data, picking the MSLP and 10m U,V Wind variables in the dataset and plotting them for Gulf Of Mexico.
 ```python
-from visjobs.datas import get_data
+from visjobs.datas import get_MODEL
 from visjobs.visualize import easy_plot
 import xarray as xr
 import matplotlib.pyplot as plt
@@ -149,9 +149,9 @@ import proplot as plot
 import numpy as np
 import cartopy
 
-data = get_data.pick_data(latest=True, hour='06', model='GFS')
+data = get_MODEL.pick_data(latest=True, hour='06', model='GFS')
 
-time, area_dict = get_data.pick_area(
+time, area_dict = get_MODEL.pick_area(
                             data, init_time=0, 
                             total_process=3, interval=1, 
                             pr_height=['500'],

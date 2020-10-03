@@ -1,11 +1,13 @@
 # visjobs
 
-Visjobs offers plotting effective variables in effective way using atmospheric models.
+Using visjobs getting the Latest Atmospheric Model, Reanalysis, Observation data and plotting them is very easy.
 
 ## 1.Installation
 
 #### 1.1. Dependencies
 - xarray
+- pydap
+- twine
 - siphon
 - pandas
 - numpy

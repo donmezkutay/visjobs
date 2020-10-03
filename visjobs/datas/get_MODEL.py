@@ -14,11 +14,16 @@ def pick_data(year=None, month=None, day=None, hour=None, latest=False, model='G
         year       :str;
         month      :str; (eg. Instead of '1' input '01')
         day        :str; (eg. Instead of '1' input '01')
-        hour       :str; Options: '18', '12', '06', '00' [Should be given]
+        hour       :str; Options;
+                            For GFS, GEFS, NAM: '18', '12', '06', '00' [Should be given]
+                            For HRRR, NBM's     : '00', '01', ...., '23' [Should be given]
+                            
         latest     :Boolean (If Latest=True given date is no more importance)
-        model      :str; Options: 'GFS', 'NAM', 'GEFS' 
-        hourly     :Boolean; (Only valid for GFS Data please choose model=GFS for this feature)
-        Resolution :int; (Only valid for GFS Data)"""
+        model      :str; Options: 'GFS', 'NAM', 'GEFS', 'HRRR', 'NBM_1HR', 'NBM_3HR', 'NBM_6HR' 
+        hourly     :Boolean; (Only valid for GFS, HRRR and NBM_1HR Data):
+                                              --> HRRR and NBM_1HR only valid for hourly=True
+                                                
+        Resolution :float; (Only valid for GFS Data, vomitted for other models)"""
     
     #Check if user has passed a valid obligatory hour
     try:
@@ -26,7 +31,9 @@ def pick_data(year=None, month=None, day=None, hour=None, latest=False, model='G
             pass
     except:
         print("""Error --> Even If you indicate Latest=True, please input the run hour..
-                               Options: '18', '12', '06', '00'
+                               Options:
+                                   For GFS, NAM, 'GEFS': '18', '12', '06', '00'
+                                   For HRRR, NBM's     : '00', '01', '02' ,......, '23' (Full day)
                   """)
         raise
             
@@ -35,14 +42,20 @@ def pick_data(year=None, month=None, day=None, hour=None, latest=False, model='G
     resolution = int(np.multiply(resolution,100))
     
     #available models
-    models = np.array(['GFS', 'NAM', 'GEFS'])
+    models = np.array(['GFS', 'NAM', 'GEFS', 'HRRR',
+                       'NBM_1HR', 'NBM_3HR', 'NBM_6HR'])
     
     #available hours
     hours = np.array(['18','12','06','00'])
     
     #check user only inputs hourly and GFS together not any else option 
-    if model in ['NAM', 'GEFS'] and hourly == True:
+    if model in ['NAM', 'GEFS', 'NBM_3HR', 'NBM_6HR'] and hourly == True:
         print('Error --> model={} and hourly=True choices can not be done together..'.format(model))
+        raise
+    
+    #if HRRR is choosen the hourly has to be True
+    if model in ['HRRR', 'NBM_1HR'] and hourly != True:
+        print('Error --> model={} has only hourly=True option !..'.format(model))
         raise
     
     #Checking if user asking for the latest data, or the user indicates a specific date..
@@ -58,6 +71,27 @@ def pick_data(year=None, month=None, day=None, hour=None, latest=False, model='G
         if day<10:
             day = str(0)+ str(day)
     
+    #User should give hour input for latest=True
+    if latest == True:
+        if hour is None:
+            print("""Error --> For latest=True, Please input latest run's hour:
+                               You can check latest hour from one of the below links (According to data you want):
+                                   http://nomads.ncep.noaa.gov:80/dods/blend/blend{}
+                                   http://nomads.ncep.noaa.gov:80/dods/gfs_0p25/gfs{}
+                                   http://nomads.ncep.noaa.gov:80/dods/nam/nam{}
+                                   http://nomads.ncep.noaa.gov:80/dods/hrrr/hrrr{}
+                                   http://nomads.ncep.noaa.gov:80/dods/gens_bc/gens{}""".
+                                 format(str(year)+str(month)+str(day),
+                                        str(year)+str(month)+str(day),
+                                        str(year)+str(month)+str(day),
+                                        str(year)+str(month)+str(day),
+                                        str(year)+str(month)+str(day),))
+                                                
+            raise
+        else:
+            pass
+    
+    #Check if year,month,day is given for latest=False option
     if latest == False:
         
         
@@ -77,11 +111,16 @@ def pick_data(year=None, month=None, day=None, hour=None, latest=False, model='G
             data = xr.open_dataset(r'http://nomads.ncep.noaa.gov:80/dods/gfs_0p{}/gfs{}/gfs_0p{}_{}z'.
                                      format(resolution, str(year)+str(month)+str(day), resolution, hour), 
                                      *args, **kwargs)
+            print('Addressing Data: ', 'http://nomads.ncep.noaa.gov:80/dods/gfs_0p{}/gfs{}/gfs_0p{}_{}z'.
+                                     format(resolution, str(year)+str(month)+str(day), resolution, hour))
+            
         elif hourly == True:
 
             data = xr.open_dataset(r'http://nomads.ncep.noaa.gov:80/dods/gfs_0p{}_1hr/gfs{}/gfs_0p{}_1hr_{}z'.
                                      format(resolution, str(year)+str(month)+str(day), resolution, hour),
                                      *args, **kwargs)
+            print('Addressing Data: ', 'http://nomads.ncep.noaa.gov:80/dods/gfs_0p{}_1hr/gfs{}/gfs_0p{}_1hr_{}z'.
+                                     format(resolution, str(year)+str(month)+str(day), resolution, hour) )
         
     #NAM
     elif model == models[1]:
@@ -89,21 +128,63 @@ def pick_data(year=None, month=None, day=None, hour=None, latest=False, model='G
         data = xr.open_dataset(r'http://nomads.ncep.noaa.gov:80/dods/nam/nam{}/nam_{}z'.
                                  format(str(year)+str(month)+str(day), hour),
                                  *args, **kwargs)
+        print('Addressing Data: ', 'http://nomads.ncep.noaa.gov:80/dods/nam/nam{}/nam_{}z'.
+                                 format(str(year)+str(month)+str(day), hour) )
+        
     #GEFS
     elif model == models[2]:
         
         data = xr.open_dataset(r'http://nomads.ncep.noaa.gov:80/dods/gens_bc/gens{}/gep_all_{}z'.
                                  format(str(year)+str(month)+str(day), hour),
                                  *args, **kwargs)
-            
-
+        print('Addressing Data: ', 'http://nomads.ncep.noaa.gov:80/dods/gens_bc/gens{}/gep_all_{}z'.
+                                 format(str(year)+str(month)+str(day), hour) )
+        
+    #HRRR
+    elif model == models[3]:
+        
+        data = xr.open_dataset(r'http://nomads.ncep.noaa.gov:80/dods/hrrr/hrrr{}/hrrr_sfc.t{}z'.
+                                 format(str(year)+str(month)+str(day), hour),
+                                 *args, **kwargs)
+        print('Addressing Data: ', 'http://nomads.ncep.noaa.gov:80/dods/hrrr/hrrr{}/hrrr_sfc.t{}z'.
+                                 format(str(year)+str(month)+str(day), hour) )
+        
+    #NBM_1HR
+    elif model == models[4]:
+        
+        data = xr.open_dataset(r'http://nomads.ncep.noaa.gov:80/dods/blend/blend{}/blend_1hr_{}z'.
+                                 format(str(year)+str(month)+str(day), hour),
+                                 *args, **kwargs)
+        print('Addressing Data: ', 'http://nomads.ncep.noaa.gov:80/dods/blend/blend{}/blend_1hr_{}z'.
+                                 format(str(year)+str(month)+str(day), hour) )
+        
+    #NBM_3HR
+    elif model == models[5]:
+        
+        data = xr.open_dataset(r'http://nomads.ncep.noaa.gov:80/dods/blend/blend{}/blend_3hr_{}z'.
+                                 format(str(year)+str(month)+str(day), hour),
+                                 *args, **kwargs)
+        print('Addressing Data: ', 'http://nomads.ncep.noaa.gov:80/dods/blend/blend{}/blend_3hr_{}z'.
+                                 format(str(year)+str(month)+str(day), hour))
+        
+    #NBM_6HR
+    elif model == models[6]:
+        
+        data = xr.open_dataset(r'http://nomads.ncep.noaa.gov:80/dods/blend/blend{}/blend_6hr_{}z'.
+                                 format(str(year)+str(month)+str(day), hour),
+                                 *args, **kwargs)
+        
+        print('Addressing Data: ', 'http://nomads.ncep.noaa.gov:80/dods/blend/blend{}/blend_6hr_{}z'.
+                                     format(str(year)+str(month)+str(day), hour))  
+        
+    print('Connected {} Data via OpenDAP'.format(model))
     return data
 
 #now with this function we will be able to specify the area we are interested and also the variables.
 def pick_area(data ,total_process, interval ,list_of_vars, list_of_areas, init_time=0, pr_height=None, ):
     """ Returns time_with_interval and the dictionary of the areas with variables
      
-        data          :str; 'GFS', 'NAM' or 'GEFS' Xarray DataArray should be given
+        data          :str; 'GFS', 'NAM', 'GEFS', or 'HRRR' Xarray DataArray should be given
         total_process :int; means the until which time step data is expected (1 or 2 or 100 etc.)
         interval      :int; means until the expected time step in which interval data should be taken.
         list_of_vars  :list of str; (Data variable names) the list of variables can be also a single element list:

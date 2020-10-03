@@ -61,6 +61,34 @@ data = get_MODEL.pick_data(hour='18', latest=True,
                           model='NAM', hourly=False)
 ``` 
 
+##### HRRR (0.029 Degree / CONUS)
+Get the latest 14 UTC HRRR (0.029 Degree) 1 hourly Data.
+``` python
+data = get_MODEL.pick_data(hour='14', latest=True,
+                          model='HRRR', hourly=True)
+``` 
+
+##### NBM_1HR (National Blend of Models / CONUS)
+Get the latest 21 UTC NBM 1 hourly Data.
+``` python
+data = get_MODEL.pick_data(hour='21', latest=True,
+                          model='NBM_1HR', hourly=True)
+``` 
+
+##### NBM_3HR (National Blend of Models / CONUS)
+Get the latest 13 UTC NBM 3 hourly Data.
+``` python
+data = get_MODEL.pick_data(hour='13', latest=True,
+                          model='NBM_3HR',)
+``` 
+
+##### NBM_6HR (National Blend of Models / CONUS)
+Get the latest 16 UTC NBM 6 hourly Data.
+``` python
+data = get_MODEL.pick_data(hour='16', latest=True,
+                          model='NBM_6HR',)
+``` 
+
 ##### Using DASK Chunks with Xarray
 You can also get the model data with dask chunks such as:
 ``` python

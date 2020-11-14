@@ -229,7 +229,7 @@ def pick_area(data ,total_process, interval ,list_of_vars, list_of_areas, init_t
     #looping in the list of areas
     say_pl = 1
     for pl in list_of_areas:
-        variables_l = []
+        variables_l = {}
         #looping in the list of variables
         say_var =1
         for var in list_of_vars:
@@ -247,11 +247,11 @@ def pick_area(data ,total_process, interval ,list_of_vars, list_of_areas, init_t
                                        lat=slice(p_d[pl][2],p_d[pl][3]),).isel(time=slice(init_time, total_process, interval))
             
                 #append a single variable given by the user
-            variables_l.append(single)
+            variables_l[var] = single
          
         
         #append all the variables with respect to their area of interest.
-        places_dict[pl] = variables_l[0]
+        places_dict[pl] = variables_l
     
     #return
     return places_dict

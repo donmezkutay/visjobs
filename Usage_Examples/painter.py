@@ -6,20 +6,19 @@
 """
 
 from visjobs.datas import get_MODEL
-from visjobs.visualize import draw_map
 from visjobs.visualize import easy_plot
 import numpy as np
 import xarray as xr
 
 data = get_data.pick_data(latest=True, hour='06', model='GFS', resolution=0.25)
 
-time, dt_dict = get_data.pick_area(data, init_time=0 ,total_process=10, interval=1, 
-                                       list_of_vars=['prmslmsl', 'tmpprs', 'hgtprs'],
-                                       list_of_areas=['europe'],pr_height=[500])
+dt_dict = get_data.pick_area(data, init_time=0 ,total_process=10, interval=1, 
+                             list_of_vars=['prmslmsl', 'tmpprs', 'hgtprs'],
+                             list_of_areas=['europe'],pr_height=['500'])
 
-pr = np.divide(dt_dict['europe'][0],100) #to hPa
-temp = np.subtract(dt_dict['europe'][1],273.15) #DegreeC
-hgt = dt_dict['europe'][2] # metres
+pr = np.divide(dt_dict['europe']['prmslmsl'], 100) #to hPa
+temp = np.subtract(dt_dict['europe']['tmpprs'], 273.15) #DegreeC
+hgt = dt_dict['europe']['hgtprs'] # metres
 
 lon = pr.lon[:].values
 lat = pr.lat[:].values

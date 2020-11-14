@@ -18,10 +18,10 @@ data = get_data.pick_data(latest=True, hour='12', model='GFS', )
 time, dt_dict = get_data.pick_area(data, total_process=32, interval=1, pr_height=['500'], list_of_vars=['ugrdprs', 'vgrdprs', 'hgtprs','prmslmsl'],
                                    list_of_areas=['europe'], )
 #set data
-uw = dt_dict['europe'][0]
-vw = dt_dict['europe'][1]
-hgt = dt_dict['europe'][2]
-prs = dt_dict['europe'][3] / 100
+uw = dt_dict['europe']['ugrdprs']
+vw = dt_dict['europe']['vgrdprs']
+hgt = dt_dict['europe']['hgtprs']
+prs = dt_dict['europe']['prmslmsl'] / 100
 
 
 #set lat lon

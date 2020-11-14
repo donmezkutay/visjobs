@@ -136,7 +136,7 @@ Visjobs has a function that will return desired model variables for some of the 
 Let's say we want to pull MSLP and 500 mb Geopotential Height variables from our previously defined Xarray dataset <data> for North America and Europe.
 ```python
 
-time, area_dict = get_MODEL.pick_area(
+area_dict = get_MODEL.pick_area(
                             data, init_time=0, 
                             total_process=2, interval=1, 
 		            list_of_vars=['prmslmsl','hgtprs'],
@@ -154,11 +154,11 @@ here;
 
 With one code step forward you can seperate the data you choose into appropriate pieces:
 ```python
-mslp_NA = np.divide(area_dict['northamerica'][0], 100)
-mslp_E  = np.divide(area_dict['europe'][0], 100)
+mslp_NA = np.divide(area_dict['northamerica']['prmslmsl'], 100)
+mslp_E  = np.divide(area_dict['europe']['prmslmsl'], 100)
 
-height_NA = area_dict['northamerica'][1]
-height_E  = area_dict['europe'][1]
+height_NA = area_dict['northamerica']['hgtprs']
+height_E  = area_dict['europe']['hgtprs']
 ```
 
 #### 2.3. Visualizing the Xarray Dataset

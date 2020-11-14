@@ -7,7 +7,6 @@ from visjobs.datas import get_MODEL
 from visjobs.visualize import easy_plot
 import cartopy
 from matplotlib.collections import LineCollection
-import seaborn as sns
 import matplotlib as mpl
 
 #get atlantic best track data from NHC

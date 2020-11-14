@@ -3,7 +3,6 @@
 
 
 get_ipython().system('git clone https://github.com/tomerburg/metlib.git')
-get_ipython().system('git clone https://github.com/donmezk/visjobs.git    ')
 
 
 #get dependencies

@@ -134,10 +134,10 @@ def pick_data(year=None, month=None, day=None, hour=None, latest=False, model='G
     #GEFS
     elif model == models[2]:
         
-        data = xr.open_dataset(r'http://nomads.ncep.noaa.gov:80/dods/gens_bc/gens{}/gep_all_{}z'.
+        data = xr.open_dataset(r'http://nomads.ncep.noaa.gov:80/dods/gefs/gefs{}/gefs_pgrb2bp5_all_{}z'.
                                  format(str(year)+str(month)+str(day), hour),
                                  *args, **kwargs)
-        print('Addressing Data: ', 'http://nomads.ncep.noaa.gov:80/dods/gens_bc/gens{}/gep_all_{}z'.
+        print('Addressing Data: ', 'http://nomads.ncep.noaa.gov:80/dods/gefs/gefs{}/gefs_pgrb2bp5_all_{}z'.
                                  format(str(year)+str(month)+str(day), hour) )
         
     #HRRR
@@ -188,18 +188,21 @@ def pick_area(data ,total_process, interval ,list_of_vars, list_of_areas, init_t
         total_process :int; means the until which time step data is expected (1 or 2 or 100 etc.)
         interval      :int; means until the expected time step in which interval data should be taken.
         list_of_vars  :list of str; (Data variable names) the list of variables can be also a single element list:
-                                
-                                
+                                    ['tmp2m'] or ['tmp2m', 'hgtprs'] etc.
+                                    
         list_of_areas :list of str; the list of areas can be also a single element: 
                                     available options:
                                     ['europe','northamerica','australia','gulfofmexico','carribeans','indianocean']
+        pr_height     :If the desired data is in pressure levels, which levels are expected? List of Pressure Levels:
+                                    ['500'] or ['1000', '850', '500'] etc.
+        
     """
     
     
     
     #trying if the longitude values change from 0 to 360 or -180 to 180?
     
-    if data['tmp2m']['lon'].values[0] < 0:
+    if data['lon'].values[0] < 0:
         
         p_d = {'europe' : [0, 48, 30, 65],
               'northamerica' : [-142,-42,0,60],
@@ -232,34 +235,23 @@ def pick_area(data ,total_process, interval ,list_of_vars, list_of_areas, init_t
         for var in list_of_vars:
             #check if data contains 'lev' coords.
             try:
-                if len(pr_height) == 1:
-                    #wrap the data
-                    single = data[var][init_time:total_process:interval, :, :].sel(lon=slice(p_d[pl][0],p_d[pl][1]),  
-                                                                          lat=slice(p_d[pl][2],p_d[pl][3]), 
-                                                                          lev=pr_height[0])
-                elif len(pr_height) == 2:
-                    single = data[var][init_time:total_process:interval, :, :].sel(lon=slice(p_d[pl][0],p_d[pl][1]),  
-                                                                      lat=slice(p_d[pl][2],p_d[pl][3]), 
-                                                                      lev=slice(pr_height[0],pr_height[1]))
-                #append a single variable given by the user
+                
+                #wrap the data
+                single = data[var].sel(lon=slice(p_d[pl][0],p_d[pl][1]),  
+                                       lat=slice(p_d[pl][2],p_d[pl][3]), 
+                                       lev=pr_height).isel(time=slice(init_time, total_process, interval))
                
-            
             #if no 'lev' coords exist.
             except:
-                single = data[var][init_time:total_process:interval, :, :].sel(lon=slice(p_d[pl][0],p_d[pl][1]),  
-                                                                      lat=slice(p_d[pl][2],p_d[pl][3]),)
+                single = data[var].sel(lon=slice(p_d[pl][0],p_d[pl][1]),  
+                                       lat=slice(p_d[pl][2],p_d[pl][3]),).isel(time=slice(init_time, total_process, interval))
             
                 #append a single variable given by the user
             variables_l.append(single)
-        
-            
-            
+         
         
         #append all the variables with respect to their area of interest.
-        places_dict[pl] = variables_l
-    
-    #time data with interval
-    time_w_interval = data['time'][init_time:total_process:interval]
+        places_dict[pl] = variables_l[0]
     
     #return
-    return len(time_w_interval), places_dict
+    return places_dict

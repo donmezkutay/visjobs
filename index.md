@@ -16,7 +16,7 @@ Visjobs offers plotting effective variables in effective way using atmospheric m
 - datetime
 
 #### 1.2. Pypi Installation
-- pip install visjobs
+- pip install visjobs==0.0.15
 
 #### 1.3. Github Clone
 - git clone https://github.com/donmezkutay/visjobs

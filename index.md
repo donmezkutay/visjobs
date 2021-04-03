@@ -110,7 +110,8 @@ dt = ghc.get_data_with_station('TUM00017064')
 
 For users want to easily access to Turkey's station IDs, the code below will return avaliable IDs for Turkey
 ``` python
-ghc.get_turkey_ID()
+#ghc.get_turkey_ID()
+#this code is currently unavailable --> v0.0.15
 ``` 
 
 ##### ERA-5 (0.25 Degree)

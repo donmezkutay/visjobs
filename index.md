@@ -120,15 +120,17 @@ Let's say we want to get the ERA-5 0.25 degree hourly pressure and single data f
 from visjobs.datas import get_ERA5
 username = 'rda ucar login username'
 password = 'rda ucar password'
-u, v, z, q, w, vo, t = get_ERA5.get_pressure_variables(username, password, '20050829', parse='all')
-t2, msl, cape, u10, v10 = get_ERA5.get_single_variables(username, password, '20050829', 'august', parse='all')
+pressure_data = get_ERA5.get_pressure_variables(username, password, '20050829', ['u', 'v', 'z'], parse='all')
+single_data = get_ERA5.get_single_variables(username, password, '20050829', ['ci', 'asn'], parse='all')
 ``` 
+Do not forget that docstring provides variable codes (eg. u, v, z, ci, asn).!
 
 Also by changing "parse" argument you can narrow down the area for the dataset only to Turkey. Such as:
 ``` python
 username = 'rda ucar login username'
 password = 'rda ucar password'
-u, v, z, q, w, vo, t = get_ERA5.get_pressure_variables(username, password, '20050829', parse='turkey')
+pressure_turkey = get_ERA5.get_pressure_variables(username, password, '20050829',  ['u', 'v', 'z'], parse='turkey')
+single_turkey = get_ERA5.get_single_variables(username, password, '20050829',  ['ci', 'asn'], parse='turkey')
 ``` 
 
 #### 2.2. Arranging The Xarray Dataset

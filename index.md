@@ -89,7 +89,7 @@ data = get_MODEL.pick_data(hour='16', latest=True,
                           model='NBM_6HR',)
 ``` 
 
-##### Using DASK Chunks with Xarray
+##### Using DASK Chunks with Xarray (DASK library required to be installed beforehand)
 You can also get the model data with dask chunks such as:
 ``` python
 data = get_MODEL.pick_data(hour='18', latest=True,
@@ -175,11 +175,10 @@ import matplotlib.pyplot as plt
 import proplot as plot
 import numpy as np
 import cartopy
-import proplot as plot
 
 data = get_MODEL.pick_data(latest=True, hour='06', model='GFS')
 
-time, area_dict = get_MODEL.pick_area(
+area_dict = get_MODEL.pick_area(
                             data, init_time=0, 
                             total_process=3, interval=1, 
 			    list_of_areas=['northamerica'],
@@ -187,9 +186,9 @@ time, area_dict = get_MODEL.pick_area(
 				          'vgrd10m'],)
 
 #Seperate data
-prs = np.divide(area_dict['northamerica'][0], 100) #convert to hPa
-u10 = np.multiply(area_dict['northamerica'][1], 1.94384449) #convert to knot
-v10 = np.multiply(area_dict['northamerica'][2], 1.94384449) #convert to knot
+prs = np.divide(area_dict['northamerica']['prmslmsl'], 100) #convert to hPa
+u10 = np.multiply(area_dict['northamerica']['ugrd10m'], 1.94384449) #convert to knot
+v10 = np.multiply(area_dict['northamerica']['vgrd10m'], 1.94384449) #convert to knot
 
 #calculate wind speed from u and v wind
 ww = np.sqrt((u10**2) + (v10**2))
@@ -199,10 +198,7 @@ lon = u10['lon']
 lat = u10['lat']
 
 #get cmap
-cmap = plot.Colormap('Blue2','Green5_r',
-    		     'Orange5', 'RedPurple6_r', 'Brown1',
-    		     ratios=(20/88, 14/88, 16/88, 20/88, 18/88), 
-		     name='SciVisColor', save=True)
+cmap = 'gnuplot2_r'
 
 #start easy_job instance
 m = easy_plot.painter()

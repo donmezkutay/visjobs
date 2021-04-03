@@ -16,7 +16,7 @@ Using visjobs getting the Latest Atmospheric Model, Reanalysis, Observation data
 - datetime
 
 #### 1.2. Pypi Installation
-- pip install visjobs
+- pip install visjobs==0.0.15
 
 #### 1.3. Github Clone
 - git clone https://github.com/donmezkutay/visjobs

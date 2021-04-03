@@ -5,10 +5,10 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="visjobs", # Replace with your own username
-    version="0.0.14",
+    version="0.0.15",
     author="Kutay Donmez & Berkay Donmez",
     author_email="donmezk@outlook.com",
-    description="Get The Latest Atmospheric Model Data | Analyse | Visualize Easily",
+    description="Get The Latest Atmospheric Model Data | Analyze | Visualize Easily",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/donmezkutay/visjobs",

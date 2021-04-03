@@ -130,7 +130,7 @@ def read_ghcn_data_file(filename):
     df = df.stack(level='DAY').unstack(level='ELEMENT')
 
     
-    df.replace(-9999.0, pd.np.nan, inplace=True)
+    df.replace(-9999.0, np.nan, inplace=True)
     df.dropna(how='all', inplace=True)
 
     # replace the entire index with the date.
@@ -172,5 +172,6 @@ def get_data_with_station(station_id):
     outfile=station_id+".dly"
     
     dt = read_ghcn_data_file(filename=outfile)
+    dt = dt.rename_axis("DATE", axis="columns")
     print('{} STATION DATA IS TAKEN'.format(station_id))
     return dt

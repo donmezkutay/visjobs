@@ -51,56 +51,73 @@ def get_era5_pressure(username, password, date, var, session):
     ds = xr.open_dataset(store,  )
     return ds
 
-def get_pressure_variables(username, password, date, parse='all'):
-    """Gets all the needed pressure ERA5 variables for climaturk"""
+def get_pressure_variables(username, password, date, variable_list, parse='all'):
+    """Gets all the needed pressure ERA5 variables
+    
+        PARAMETERS:
+        username: cds copernicus climate username (str),
+        password: cds copernicus climate password (str),
+        date: date (str): in eg. '20050829' format,
+        variable list: list of variables that are desired (list of str),
+                    available variable options: ['pv',
+                                                 'crwc',
+                                                 'u',
+                                                 'v',
+                                                 'z',
+                                                 'cswc',
+                                                 'q',
+                                                 'w',
+                                                 'vo',
+                                                 'd',
+                                                 'r',
+                                                 'clwc',
+                                                 'ciwc',
+                                                 'cc',
+                                                 'o3',
+                                                 't']
+                    
+        parse: whether whole data or a part of it is expected: (str) 'all' or 'turkey'
+        """
     
     print('Starting Session')
     #start the session
     session = requests.Session()
     session.auth = (username, password)
-    variables = ['u', 'v', 'z', 'q', 'w', 'vo', 't']
+    variables = variable_list
     dt_list = [] 
     for vr in variables:
         d = get_era5_pressure(username, password, date, vr, session)
         dt_list.append(d)
         print('Variable {} is taken'.format(vr))
     
-    if parse is 'all':
-        return dt_list
+    if parse == 'all':
+        return xr.merge(dt_list)
     
-    elif parse is 'turkey':
+    elif parse == 'turkey':
         turk_lat = slice(50, 30)
         turk_lon = slice(20, 47)
-        lev_dict = { 'u' :[250, 700], 
-                     'v' :[250, 700], 
-                     'z' :[500, 700, 850], 
-                     'q' :[700], 
-                     'w' :[700],
-                     'vo':[500],
-                     't' :[700, 850]}
         
         turk_dt_list = []
         for i, vr in enumerate(variables):
-            d = dt_list[i].sel(latitude = turk_lat, longitude = turk_lon, level = lev_dict[vr])
+            d = dt_list[i].sel(latitude = turk_lat, longitude = turk_lon,)
 
             turk_dt_list.append(d)
         
-        return turk_dt_list
-        
+        return xr.merge(turk_dt_list)
 
 #era5 single data
 def get_era5_single(username, password, date, month, var, session):
-    month_day = {'january':'31',
-                 'march':'31',
-                 'april':'30',
-                 'may':'31',
-                 'june':'30',
-                 'july':'31',
-                 'august':'31',
-                 'september':'30',
-                 'october':'31',
-                 'november':'30',
-                 'december':'31'}
+    month_day = {'01':'31',
+                 '03':'31',
+                 '04':'30',
+                 '05':'31',
+                 '06':'30',
+                 '07':'31',
+                 '08':'31',
+                 '09':'30',
+                 '10':'31',
+                 '11':'30',
+                 '12':'31'}
     
     vrb = {'aluvp':'015',
            'aluvd':'016',
@@ -157,10 +174,10 @@ def get_era5_single(username, password, date, month, var, session):
     
     cat = 'https://rda.ucar.edu/thredds/dodsC/files/g/ds633.0/e5.oper.an.sfc/{}/'.format(date[:6])
     
-    if date[4:6] in ['01','03','04','05','06','07','08','09','10','11','12']:
+    if month in ['01','03','04','05','06','07','08','09','10','11','12']:
         datasetName = "e5.oper.an.sfc.128_{}_{}.ll025sc.{}0100_{}{}23.nc".format(vrb[var], var, date[:6], date[:6], month_day[month])
     
-    elif date[4:6] == '02':
+    elif month == '02':
         day_count = monthrange(date[:4], 2)[1]
         datasetName = "e5.oper.an.sfc.128_{}_{}.ll025sc.{}0100_{}{}23.nc".format(vrb[var], var, date[:6], date[:6], str(day_count))
     
@@ -174,26 +191,88 @@ def get_era5_single(username, password, date, month, var, session):
     ds = xr.open_dataset(store, )
     return ds
 
-def get_single_variables(username, password, date, month, parse='all'):
-    """Gets all the needed single ERA5 variables for climaturk"""
+def get_single_variables(username, password, date, variable_list, parse='all'):
+    """Gets all the needed single ERA5 variables
+        
+        PARAMETERS:
+        username: cds copernicus climate username (str),
+        password: cds copernicus climate password (str),
+        date: date (str): in eg. '20050829' format,
+        variable list: list of variables that are desired (list of str),
+                    available variable options: ['aluvp',
+                                                 'aluvd',
+                                                 'alnip',
+                                                 'alnid',
+                                                 'ci',
+                                                 'asn',
+                                                 'rsn',
+                                                 'istl1',
+                                                 'istl2',
+                                                 'istl3',
+                                                 'istl4',
+                                                 'swvl1',
+                                                 'swvl2',
+                                                 'swvl3',
+                                                 'swvl4',
+                                                 'cape',
+                                                 'lailv',
+                                                 'laihv',
+                                                 'tclw',
+                                                 'tciw',
+                                                 'sp',
+                                                 'tcw',
+                                                 'scwv',
+                                                 'stl1',
+                                                 'sd',
+                                                 'chnk',
+                                                 'msl',
+                                                 'blh',
+                                                 'tcc',
+                                                 '10u',
+                                                 '10v',
+                                                 '2t',
+                                                 '2d',
+                                                 'stl2',
+                                                 'stl3',
+                                                 'lcc',
+                                                 'mcc',
+                                                 'hcc',
+                                                 'src',
+                                                 'tco3',
+                                                 'iews',
+                                                 'inss',
+                                                 'ishf',
+                                                 'ie',
+                                                 'skt',
+                                                 'stl4',
+                                                 'tsn',
+                                                 'fal',
+                                                 'fsr',
+                                                 'flsr']
+                    
+        parse: whether whole data or a part of it is expected: (str) 'all' or 'turkey'"""
     
     print('Starting Session')
     #start the session
     session = requests.Session()
     session.auth = (username, password)
-    variables = ['2t', 'msl', 'cape', '10u', '10v']
+    
+    month = date[4:6]
+    start_dt = '{}-{}-{}T00:00:00.000000000'.format(date[:4], date[4:6], date[6:8])
+    end_dt = '{}-{}-{}T23:00:00.000000000'.format(date[:4], date[4:6], date[6:8])
+        
+    variables = variable_list
     dt_list = [] 
     for vr in variables:
         d = get_era5_single(username, password, date, month, vr, session)
+        d = d.sel(time = slice(start_dt, end_dt))
         dt_list.append(d)
         print('Variable {} is taken'.format(vr))
     
-    if parse is 'all':
-        return dt_list
+    if parse == 'all':
+        return xr.merge(dt_list)
     
-    elif parse is 'turkey':
-        start_dt = '{}-{}-{}T00:00:00.000000000'.format(date[:4], date[4:6], date[6:8])
-        end_dt = '{}-{}-{}T23:00:00.000000000'.format(date[:4], date[4:6], date[6:8])
+    elif parse == 'turkey':
         
         turk_lat = slice(50, 30)
         turk_lon = slice(20, 47)
@@ -203,4 +282,4 @@ def get_single_variables(username, password, date, month, parse='all'):
             d = dt_list[i].sel(latitude = turk_lat, longitude = turk_lon, time = slice(start_dt, end_dt))
             turk_dt_list.append(d)
         
-        return turk_dt_list
+        return xr.merge(turk_dt_list)

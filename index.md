@@ -85,7 +85,7 @@ data = get_MODEL.pick_data(hour='13', latest=True,
 ##### NBM_6HR (National Blend of Models / CONUS)
 Get the latest 16 UTC NBM 6 hourly Data.
 ``` python
-data = get_MODEL.pick_data(hour='16', latest=True,
+data = get_MODEL.pick_data(hour='06', latest=True,
                           model='NBM_6HR',)
 ``` 
 
